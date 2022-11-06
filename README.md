@@ -1,5 +1,4 @@
-# Čau lidi
-![image](https://user-images.githubusercontent.com/43199888/200189658-73887839-3cd9-4e01-a528-cc1adb6aa9dc.png)
+# pesimistic-dog
 
 This is an app bootstrapped according to the [init.tips](https://init.tips) stack, also known as the T3-Stack.
 
