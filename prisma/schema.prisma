@@ -84,12 +84,18 @@ model Subject {
 
     studyProgrammeId  String
     studyProgramme    StudyProgramme   @relation(fields: [studyProgrammeId], references: [id], onDelete: Cascade)
+
+    contents          ContentInSubject[]
+    topics            Topic[]
 }
 
 model Content {
     id                String          @id @default(cuid())
     title             String
-    link       String
+    link              String
+
+    topics            ContentInTopic[]
+    subjects          ContentInSubject[]
 }
 
 model Topic {
@@ -97,4 +103,29 @@ model Topic {
     title             String
     description       String
     orderNumber       Integer
+
+    contents          ContentInTopic[]
+
+    subjectId         String
+    subject           Subject         @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+}
+
+model ContentInTopic {
+    contentId         String
+    content           Content      @relation(fields: [contentId], references: [id], onDelete: Cascade)
+
+    topicId           String
+    topic             Topic        @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+    @@id([contentId, topicId])
+}
+
+model ContentInSubject {
+    contentId         String
+    content           Content      @relation(fields: [contentId], references: [id], onDelete: Cascade)
+
+    subjectId           String
+    subject             Subject        @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+    @@id([contentId, topicId])
 }
