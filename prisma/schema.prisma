@@ -14,12 +14,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Example {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
@@ -63,4 +57,44 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+
+
+model School {
+    id                String     @id @default(cuid())
+    name              String
+    studyProgrammes   StudyProgramme[]
+}
+
+model StudyProgramme  {
+    id                String     @id @default(cuid())
+    title             String
+
+    schoolId          String
+    school            School     @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+    subjects          Subject[]
+}
+
+model Subject {
+    id                String          @id @default(cuid())
+    title             String
+    description       String
+
+    studyProgrammeId  String
+    studyProgramme    StudyProgramme   @relation(fields: [studyProgrammeId], references: [id], onDelete: Cascade)
+}
+
+model Content {
+    id                String          @id @default(cuid())
+    title             String
+    link       String
+}
+
+model Topic {
+    id                String          @id @default(cuid())
+    title             String
+    description       String
+    orderNumber       Integer
 }
