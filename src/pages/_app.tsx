@@ -3,6 +3,7 @@ import { type Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import { trpc } from '../utils/trpc';
 import { MantineProvider } from '@mantine/core';
+import * as MantineTheme from '../../mantine.config.cjs';
 
 import '../styles/globals.css';
 
@@ -11,7 +12,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     pageProps: { session, ...pageProps },
 }) => {
     return (
-        <MantineProvider withGlobalStyles withNormalizeCSS>
+        <MantineProvider withGlobalStyles withNormalizeCSS theme={MantineTheme}>
             <SessionProvider session={session}>
                 <Component {...pageProps} />
             </SessionProvider>
