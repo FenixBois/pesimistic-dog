@@ -1,23 +1,22 @@
-import { type AppType } from "next/app";
-import { type Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
-import { trpc } from "../utils/trpc";
-import { Space_Grotesk } from "@next/font/google"
+import { type AppType } from 'next/app';
+import { type Session } from 'next-auth';
+import { SessionProvider } from 'next-auth/react';
+import { trpc } from '../utils/trpc';
+import { MantineProvider } from '@mantine/core';
 
-import "../styles/globals.css";
-
-const spaceGrotesk = Space_Grotesk();
+import '../styles/globals.css';
 
 const MyApp: AppType<{ session: Session | null }> = ({
-  Component,
-  pageProps: { session, ...pageProps },
+    Component,
+    pageProps: { session, ...pageProps },
 }) => {
-  return (
-    <div className={spaceGrotesk.className}>
-      <SessionProvider session={session}>
-      <Component {...pageProps} />
-    </SessionProvider></div>
-  );
+    return (
+        <MantineProvider withGlobalStyles withNormalizeCSS>
+            <SessionProvider session={session}>
+                <Component {...pageProps} />
+            </SessionProvider>
+        </MantineProvider>
+    );
 };
 
 export default trpc.withTRPC(MyApp);
