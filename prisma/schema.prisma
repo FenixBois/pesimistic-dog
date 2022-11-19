@@ -49,6 +49,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+
+  teachingSubjects Subject[]
 }
 
 model VerificationToken {
@@ -85,6 +87,9 @@ model Subject {
     studyProgrammeId  String
     studyProgramme    StudyProgramme   @relation(fields: [studyProgrammeId], references: [id], onDelete: Cascade)
 
+    teacherId         String
+    teacher           User             @relation(fields: [teacherId], references: [id])
+
     contents          ContentInSubject[]
     topics            Topic[]
 }
@@ -102,7 +107,7 @@ model Topic {
     id                String          @id @default(cuid())
     title             String
     description       String
-    orderNumber       Integer
+    orderNumber       Int
 
     contents          ContentInTopic[]
 
@@ -127,5 +132,5 @@ model ContentInSubject {
     subjectId           String
     subject             Subject        @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
-    @@id([contentId, topicId])
+    @@id([contentId, subjectId])
 }
