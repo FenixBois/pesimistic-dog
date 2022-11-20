@@ -1,4 +1,4 @@
-POST localhost:3001/api/trpc/subject.create
+POST localhost:3000/api/trpc/subject.create
 Content-Type: application/json
 
 {
@@ -6,6 +6,9 @@ Content-Type: application/json
     "teacherId": "clanwixxv00002e6de9mciu9k",
     "title": "abc",
     "description": "def",
-    "studyProgrammeId": "clanwixxv00002e6de9mciu9k"
+    "studyProgrammeId": "clanwixxv00002e6de9mciu9k",
+    "numberOfCredits": 1,
+    "degreeOfStudy": "BC",
+    "language": "CS"
   }
 }
