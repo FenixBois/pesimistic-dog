@@ -1,0 +1,29 @@
+POST localhost:3000/api/trpc/subject.create
+Content-Type: application/json
+
+{
+  "json": {
+    "teacherId": "cjld2cyuq0000t3rmniod1foy",
+    "title": "abc",
+    "description": "def",
+    "studyProgrammeId": "clau2z48h0003rlpwmdahawtl",
+    "numberOfCredits": 1,
+    "degreeOfStudy": "BC",
+    "language": "CS"
+  }
+}
+
+###
+GET localhost:3000/api/trpc/subject.get?input=%7B%0A%20%20%22json%22%3A%20%7B%0A%20%20%20%20%22id%22%3A%20%22clau30kld0007rlpwomphca0p%22%0A%20%20%7D%0A%7D
+
+
+###
+POST localhost:3000/api/trpc/studyProgramme.create
+Content-Type: application/json
+
+{
+  "json": {
+    "title": "A",
+    "schoolId": "cjld2cyuq0000t3rmniod1foy"
+  }
+}
