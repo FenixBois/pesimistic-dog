@@ -1,0 +1,14 @@
+POST localhost:3000/api/trpc/subject.create
+Content-Type: application/json
+
+{
+  "json": {
+    "teacherId": "clanwixxv00002e6de9mciu9k",
+    "title": "abc",
+    "description": "def",
+    "studyProgrammeId": "clanwixxv00002e6de9mciu9k",
+    "numberOfCredits": 1,
+    "degreeOfStudy": "BC",
+    "language": "CS"
+  }
+}
