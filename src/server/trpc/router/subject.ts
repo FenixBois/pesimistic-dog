@@ -1,13 +1,14 @@
 import { z } from "zod";
 
-import { protectedProcedure, router } from "../trpc";
+import { protectedProcedure, publicProcedure, router } from "../trpc";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import {  DegreeOfStudySchema } from "../../../types/degreeOfStudy";
 import { LanguageOfStudySchema } from "../../../types/languageOfStudy";
 import { convertKnownPrismaError } from "../../common/utils";
+import { Role } from "@prisma/client";
 
 export const subjectRouter = router({
-  create: protectedProcedure()
+  create: protectedProcedure(Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS, Role.TEACHER)
     .input(z.object({
       // TODO add length limits
       title: z.string().max(50),
@@ -28,7 +29,7 @@ export const subjectRouter = router({
         throw e;
       }
     }),
-  get: protectedProcedure()
+  get: publicProcedure
     .input(z.object({
       id: z.string().cuid()
     }))
