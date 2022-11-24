@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import { protectedProcedure, router } from "../trpc";
-import { TRPCError } from "@trpc/server";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import {  DegreeOfStudySchema } from "../../../types/degreeOfStudy";
 import { LanguageOfStudySchema } from "../../../types/languageOfStudy";

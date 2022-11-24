@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
   // Further reading:
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
@@ -49,6 +49,9 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  role          Role
+
+  teachingSubjects Subject[]
 }
 
 model VerificationToken {
@@ -85,8 +88,15 @@ model Subject {
     studyProgrammeId  String
     studyProgramme    StudyProgramme   @relation(fields: [studyProgrammeId], references: [id], onDelete: Cascade)
 
+    teacherId         String
+    teacher           User             @relation(fields: [teacherId], references: [id])
+
     contents          ContentInSubject[]
     topics            Topic[]
+
+    numberOfCredits   Int
+    degreeOfStudy     DegreeOfStudy
+    language          LanguageOfStudy
 }
 
 model Content {
@@ -102,7 +112,7 @@ model Topic {
     id                String          @id @default(cuid())
     title             String
     description       String
-    orderNumber       Integer
+    orderNumber       Int
 
     contents          ContentInTopic[]
 
@@ -127,5 +137,21 @@ model ContentInSubject {
     subjectId           String
     subject             Subject        @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
-    @@id([contentId, topicId])
+    @@id([contentId, subjectId])
+}
+
+enum DegreeOfStudy {
+  MGR
+  BC
+}
+
+enum LanguageOfStudy {
+  CS
+  EN
+}
+
+enum Role {
+  TEACHER
+  ADMIN
+  STUDENT
 }

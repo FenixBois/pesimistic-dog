@@ -44,5 +44,4 @@ const isAuthed = (...roles: Role[]) => t.middleware(({ ctx, next }) => {
 /**
  * Protected procedure
  **/
-export const protectedProcedure = () => t.procedure
-  //= (...roles: Role[]) => t.procedure.use(isAuthed(...roles));
+export const protectedProcedure = (...roles: Role[]) => t.procedure.use(isAuthed(...roles));
