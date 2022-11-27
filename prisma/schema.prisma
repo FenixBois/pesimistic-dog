@@ -152,6 +152,6 @@ enum LanguageOfStudy {
 
 enum Role {
   TEACHER
-  ADMIN
+  DEPARTMENT_OF_ACADEMIC_AFFAIRS
   STUDENT
 }
