@@ -27,3 +27,25 @@ Content-Type: application/json
     "schoolId": "cjld2cyuq0000t3rmniod1foy"
   }
 }
+
+###
+POST localhost:3000/api/trpc/topic.create
+Content-Type: application/json
+
+{
+  "json": {
+    "title": "ABC",
+    "description": "def",
+    "subjectId": "clau30kld0007rlpwomphca0p"
+  }
+}
+###
+POST localhost:3000/api/trpc/content.create
+Content-Type: application/json
+
+{
+  "json": {
+    "title": "ABC",
+    "link": "def"
+  }
+}
