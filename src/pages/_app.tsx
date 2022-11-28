@@ -5,8 +5,6 @@ import { trpc } from "../utils/trpc";
 import { MantineProvider } from "@mantine/core";
 import { mantineTheme } from "../../mantine.config";
 
-import "../styles/globals.css";
-
 const MyApp: AppType<{ session: Session | null }> = ({
                                                          Component,
                                                          pageProps: { session, ...pageProps }
