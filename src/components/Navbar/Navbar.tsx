@@ -11,7 +11,7 @@ export function Navbar() {
                 <Title order={4}>Subjects</Title>
             </Link>
             <Link href='/contents' passHref>
-                <Title order={4}>Study programmes</Title>
+                <Title order={4}>Contents</Title>
             </Link>
         </Group>
     );
