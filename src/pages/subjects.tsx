@@ -1,9 +1,12 @@
-import { SubjectPage } from "../components/Subject";
+import { SubjectPage } from '../components/Subject';
+import { Layout } from '../components/Layout';
 
 export default function Subjects() {
     return (
         <>
-            <SubjectPage></SubjectPage>
+            <Layout>
+                <SubjectPage></SubjectPage>
+            </Layout>
         </>
     );
 }
