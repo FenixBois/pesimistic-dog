@@ -2,20 +2,27 @@ import { z } from "zod";
 
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
-import {  DegreeOfStudySchema } from "../../../types/degreeOfStudy";
-import { LanguageOfStudySchema } from "../../../types/languageOfStudy";
 import { convertKnownPrismaError } from "../../common/utils";
-import { Role } from "@prisma/client";
+import { DegreeOfStudy, Role } from "@prisma/client";
+import {
+  id,
+  DegreeOfStudySchema,
+  description,
+  LanguageOfStudySchema,
+  numberOfCredits,
+  studyProgrammeId,
+  teacherId,
+  title
+} from "../../../types/subject";
 
 export const subjectRouter = router({
   create: protectedProcedure(Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS, Role.TEACHER)
     .input(z.object({
-      // TODO add length limits
-      title: z.string().max(50),
-      teacherId: z.string().cuid(),
-      description: z.string(),
-      studyProgrammeId: z.string().cuid(),
-      numberOfCredits: z.number().int().min(1),
+      title,
+      teacherId,
+      description,
+      studyProgrammeId,
+      numberOfCredits,
       degreeOfStudy: DegreeOfStudySchema,
       language: LanguageOfStudySchema
     }))
@@ -30,10 +37,30 @@ export const subjectRouter = router({
       }
     }),
   get: publicProcedure
+    .input(z.object({ id }))
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.subject.findUnique({ where: { id: input.id } });
+    }),
+  edit: protectedProcedure(Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS, Role.TEACHER)
     .input(z.object({
-      id: z.string().cuid()
+      id,
+      title: title.optional(),
+      description: description.optional(),
+      teacherId: teacherId.optional(),
+      studyProgrammeId: studyProgrammeId.optional(),
+      numberOfCredits: numberOfCredits.optional(),
+      degreeOfStudy: DegreeOfStudySchema.optional(),
+      language: LanguageOfStudySchema.optional()
     }))
-    .query(async ({ctx, input}) => {
-      return ctx.prisma.subject.findUnique({where: {id: input.id}});
+    .mutation(async ({ctx, input}) => {
+      const where = {id: input.id};
+      const data = {...input, id: undefined};
+      return ctx.prisma.subject.update({where, data});
+    }),
+  delete: protectedProcedure()
+    .input(z.object({id}))
+    .mutation(async ({ctx, input}) =>{
+      const where = {id: input.id};
+      return ctx.prisma.subject.delete({where})
     })
 });
