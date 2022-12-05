@@ -57,6 +57,7 @@ export const subjectRouter = router({
       const data = {...input, id: undefined};
       return ctx.prisma.subject.update({where, data});
     }),
+  // TODO check rights
   delete: protectedProcedure()
     .input(z.object({id}))
     .mutation(async ({ctx, input}) =>{
