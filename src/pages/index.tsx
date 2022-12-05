@@ -1,6 +1,7 @@
 import { type NextPage } from 'next';
 import Head from 'next/head';
-import StudyProgrammes from './study-programmes';
+import { StudyProgrammePage } from 'components/StudyProgramme';
+import { Layout } from 'components/Layout';
 
 const Home: NextPage = () => {
     return (
@@ -10,7 +11,9 @@ const Home: NextPage = () => {
                 <meta name='description' content='Subject Manager' />
                 <link rel='icon' href='/favicon.ico' />
             </Head>
-            <StudyProgrammes />
+            <Layout>
+                <StudyProgrammePage />
+            </Layout>
         </>
     );
 };
