@@ -25,6 +25,54 @@ async function main() {
                     role: 'TEACHER',
                 },
             },
+            contents: {
+                create: [
+                    {
+                        content: {
+                            create: {
+                                title: 'Basic mathematics',
+                                link: 'https://example.com',
+                            },
+                        },
+                    },
+                    {
+                        content: {
+                            create: {
+                                title: 'Quantum mechanics for dummies',
+                                link: 'https://example.com',
+                            },
+                        },
+                    },
+                ],
+            },
+            topics: {
+                create: {
+                    title: 'Discrete mathematics',
+                    description:
+                        'This chapter will walk you through the basics of discrete mathematics',
+                    orderNumber: 1,
+                    contents: {
+                        create: [
+                            {
+                                content: {
+                                    create: {
+                                        title: 'Information theory',
+                                        link: 'https://example.com',
+                                    },
+                                },
+                            },
+                            {
+                                content: {
+                                    create: {
+                                        title: 'Combinatorics',
+                                        link: 'https://example.com',
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
             numberOfCredits: 5,
             degreeOfStudy: 'BC',
             language: 'EN',
