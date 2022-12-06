@@ -1,14 +1,14 @@
-import { Paper, Text, Title } from "@mantine/core";
+import { Paper, Text, Title } from '@mantine/core';
 
 interface ContentCardProps {
-    name: string;
+    title: string;
     link: string;
 }
 
-export function ContentCard({ name, link }: ContentCardProps) {
+export function ContentCard({ title, link }: ContentCardProps) {
     return (
-        <Paper shadow="sm" radius="md" p="lg">
-            <Title order={4}>{name}</Title>
+        <Paper>
+            <Title order={4}>{title}</Title>
             <Text>{link}</Text>
         </Paper>
     );
