@@ -7,7 +7,6 @@ import { contentRouter } from './content';
 import { topicRouter } from './topic';
 
 export const appRouter = router({
-    example: exampleRouter,
     auth: authRouter,
     subject: subjectRouter,
     school: schoolRouter,
