@@ -41,7 +41,18 @@ export const subjectRouter = router({
             })
         )
         .query(async ({ ctx, input }) => {
-            return ctx.prisma.subject.findUnique({ where: { id: input.id } });
+            return ctx.prisma.subject.findUnique({
+                where: { id: input.id },
+                include: {
+                    contents: {
+                        include: { content: true },
+                    },
+                    topics: {
+                        include: { contents: { include: { content: true } } },
+                    },
+                    teacher: true,
+                },
+            });
         }),
     getAll: publicProcedure.query(async ({ ctx }) => {
         return ctx.prisma.subject.findMany();
