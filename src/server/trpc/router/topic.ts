@@ -39,7 +39,7 @@ export const topicRouter = router({
       return ctx.prisma.topic.findMany({ where: { subject: { id: input.id } } });
     }),
   // TODO check rights
-  edit: protectedProcedure()
+  edit: protectedProcedure(Role.TEACHER, Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS)
     .input(z.object({
       id,
       title: title.optional(),
@@ -53,7 +53,7 @@ export const topicRouter = router({
       return ctx.prisma.topic.update({where, data})
     }),
   // TODO check rights
-  delete: protectedProcedure()
+  delete: protectedProcedure(Role.TEACHER, Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS)
     .input(z.object({
       id: z.string().cuid()
     }))
