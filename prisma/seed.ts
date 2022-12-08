@@ -78,6 +78,30 @@ async function main() {
             language: 'EN',
         },
     });
+
+    const martin = await prisma.user.create({
+        data: {
+            name: 'Martin Macura',
+            email: 'marty.party@unicorn.com',
+            role: 'TEACHER',
+        }
+    });
+
+    const grixi = await prisma.user.create({
+        data: {
+            name: 'Adam Tretera',
+            email: 'adam.tretera@gmail.com',
+            role: 'DEPARTMENT_OF_ACADEMIC_AFFAIRS',
+        }
+    })
+
+    const honzik = await prisma.user.create({
+        data: {
+            name: 'Honza Kral',
+            email: 'jan.siegl@awesome.com',
+            role: 'STUDENT'
+        }
+    });
 }
 
 main()
