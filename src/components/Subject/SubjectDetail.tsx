@@ -1,49 +1,122 @@
-import { Button, Group, Stack, Title } from '@mantine/core';
+import { Button, Group, Modal, Stack, Text, Title } from '@mantine/core';
 import { trpc } from '../../utils/trpc';
 import { ContentCard } from '../Content';
 import { TopicCard } from './Topic';
 import { FormModal } from '../utils/FormModal';
 import { useState } from 'react';
-import { EditSubjectForm } from './Forms/EditSubjectForm';
+import { EditContentsForm, EditSubjectForm } from 'components/Subject';
+import type { Subject } from '@prisma/client';
+import { useRouter } from 'next/router';
 
 interface SubjectDetailProps {
     id: string;
 }
 
 export function SubjectDetail({ id }: SubjectDetailProps) {
-    const { isLoading, isError, data, error } = trpc.subject.get.useQuery({
+    const router = useRouter();
+    const {
+        isLoading,
+        isError,
+        data: subject,
+        error,
+    } = trpc.subject.get.useQuery({
         id,
-    });
-    const [editModalOpen, setEditModalOpen] = useState(false);
+    }); // TODO: Throws error when page is loaded directly and id is still undefinded
 
-    function handleSubmit() {
-        setEditModalOpen(false);
+    const deleteSubjectMutation = trpc.subject.delete.useMutation({
+        onError: (error) => {
+            console.log(error);
+        },
+        onSuccess: () => {
+            router.push('/subjects');
+        },
+    });
+
+    const [editModalState, setEditModalState] = useState(false);
+    const [deleteModalState, setDeleteModalState] = useState(false);
+    const [editContentsModalState, setEditContentsModalState] = useState(false);
+
+    function handleSubmit(editedSubject: Subject) {
+        console.log(editedSubject); // TODO: update subject on change
+        setEditModalState(false);
+    }
+
+    function handleDelete() {
+        if (!subject) return;
+        deleteSubjectMutation.mutate({ id: subject.id });
     }
 
     if (isLoading) return <p>Loading...</p>;
-    if (isError || data === null) return <p>{error?.message}</p>;
+    if (isError || subject === null) return <p>{error?.message}</p>;
 
     return (
         <Stack>
-            <Title>{data.title}</Title>
+            <Title>{subject.title}</Title>
+            <Text>{subject.description}</Text>
+            <Title order={5}>
+                Teacher: {subject.teacher.name}, Credits:{' '}
+                {subject.numberOfCredits}, Degree: {subject.degreeOfStudy},
+                Language: {subject.language}
+            </Title>
             <Group>
-                <Button variant='light' onClick={() => setEditModalOpen(true)}>
+                <Button variant='light' onClick={() => setEditModalState(true)}>
                     Edit subject details
                 </Button>
                 <FormModal
                     title='Edit subject details'
-                    state={editModalOpen}
-                    setState={setEditModalOpen}
+                    state={editModalState}
+                    setState={setEditModalState}
                 >
-                    <EditSubjectForm subject={data} submit={handleSubmit} />
+                    <EditSubjectForm subject={subject} submit={handleSubmit} />
                 </FormModal>
-                <Button variant='light'>Edit contents</Button>
-                <Button variant='light' color='red'>
+                <Button
+                    variant='light'
+                    onClick={() => setEditContentsModalState(true)}
+                >
+                    Edit contents
+                </Button>
+                <FormModal
+                    state={editContentsModalState}
+                    setState={setEditContentsModalState}
+                    title='Edit contents'
+                >
+                    <EditContentsForm
+                        contents={subject.contents.map(
+                            ({ content }) => content
+                        )}
+                    />
+                </FormModal>
+                <Button
+                    variant='light'
+                    color='red'
+                    onClick={() => setDeleteModalState(true)}
+                >
                     Delete subject
                 </Button>
+                <Modal
+                    title='Are you sure you want to delete subject?'
+                    opened={deleteModalState}
+                    onClose={() => setDeleteModalState(false)}
+                >
+                    <Text size='sm'>
+                        By confirming this action you are permanently deleting
+                        aěě subject. Are you sure you want to do this?
+                    </Text>
+                    <Group mt='xl'>
+                        <Button
+                            variant='default'
+                            onClick={() => setDeleteModalState(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button color='red' onClick={() => handleDelete()}>
+                            Delete
+                        </Button>
+                    </Group>
+                </Modal>
             </Group>
             <Stack align='flex-start'>
-                {data.contents.map(({ content }) => (
+                {subject.contents.map(({ content }) => (
                     <ContentCard
                         key={content.id}
                         title={content.title}
@@ -53,7 +126,7 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
             </Stack>
             <Stack align='flex-start'>
                 <Button variant='light'>Add topic</Button>
-                {data.topics.map(({ id, title, description, contents }) => (
+                {subject.topics.map(({ id, title, description, contents }) => (
                     <TopicCard
                         key={id}
                         title={title}

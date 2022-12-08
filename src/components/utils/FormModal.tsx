@@ -19,7 +19,7 @@ export function FormModal({
             title={<h3>{title}</h3>}
             opened={state}
             onClose={() => setState(false)}
-            size='md'
+            size='lg'
             padding={50}
         >
             {children}

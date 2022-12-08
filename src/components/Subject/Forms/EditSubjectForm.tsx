@@ -8,14 +8,25 @@ import {
     TextInput,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import type { Prisma, Subject } from '@prisma/client';
+import { trpc } from '../../../utils/trpc';
+import type { Subject } from '@prisma/client';
 
 interface EditSubjectFormProps {
     subject: Subject;
-    submit: (subject: Prisma.SubjectUpdateInput) => void;
+    submit: (editedSubject: Subject) => void;
 }
 
 export function EditSubjectForm({ subject, submit }: EditSubjectFormProps) {
+    const teachers = trpc.user.getAllTeachers.useQuery().data;
+    const editSubjectMutation = trpc.subject.edit.useMutation({
+        onError: (error) => {
+            console.log(error);
+        },
+        onSuccess: (data) => {
+            submit(data);
+        },
+    });
+
     const form = useForm({
         initialValues: {
             title: subject.title,
@@ -23,14 +34,18 @@ export function EditSubjectForm({ subject, submit }: EditSubjectFormProps) {
             numberOfCredits: subject.numberOfCredits,
             degreeOfStudy: subject.degreeOfStudy,
             language: subject.language,
-            // TODO: Add ability to edit teacher
+            teacherId: subject.teacherId,
         },
     });
 
-    function handleSubmit(values: Prisma.SubjectUpdateInput) {
-        console.log(values);
-        submit(values);
-    }
+    const handleSubmit = async (values: any) => {
+        // TODO: Infer type from tRPC
+        editSubjectMutation.mutate({ id: subject.id, ...values });
+    };
+
+    if (editSubjectMutation.isLoading) return <p>Editing subject...</p>;
+    if (editSubjectMutation.isError)
+        return <p>{editSubjectMutation.error.message}</p>;
 
     return (
         <form>
@@ -65,6 +80,19 @@ export function EditSubjectForm({ subject, submit }: EditSubjectFormProps) {
                         { value: 'CS', label: 'Czech' },
                     ]}
                     {...form.getInputProps('language')}
+                />
+                <Select
+                    searchable
+                    label='Teacher'
+                    nothingFound='No teachers found'
+                    placeholder='Pick a teacher'
+                    data={
+                        teachers?.map((teacher) => ({
+                            value: teacher.id,
+                            label: teacher.name,
+                        })) ?? []
+                    }
+                    {...form.getInputProps('teacherId')}
                 />
                 <Group>
                     <Button onClick={() => handleSubmit(form.values)}>
