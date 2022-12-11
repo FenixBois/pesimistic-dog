@@ -23,7 +23,7 @@ export const publicProcedure = t.procedure;
  * users are logged in
  */
 const isAuthed = (...roles: Role[]) => t.middleware(({ ctx, next }) => {
-  if (!ctx.session || !ctx.session.user) {
+  /*if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
@@ -44,7 +44,8 @@ const isAuthed = (...roles: Role[]) => t.middleware(({ ctx, next }) => {
       // infers the `session` as non-nullable
       session: { ...ctx.session, user: ctx.session.user, roles: foundRoles }
     }
-  });
+  });*/
+  return next({ ctx });
 });
 
 /**
