@@ -84,6 +84,8 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
                         contents={subject.contents.map(
                             ({ content }) => content
                         )}
+
+                        subjectId={subject.id}
                     />
                 </FormModal>
                 <Button
@@ -125,7 +127,7 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
                 ))}
             </Stack>
             <Stack align='flex-start'>
-                <Button variant='light'>Add topic</Button>
+                {/*<Button variant='light'>Add topic</Button>*/}
                 {subject.topics.map(({ id, title, description, contents }) => (
                     <TopicCard
                         key={id}

@@ -82,6 +82,47 @@ export const subjectRouter = router({
             const data = { ...input, id: undefined };
             return ctx.prisma.subject.update({ where, data });
         }),
+    addContent: publicProcedure
+        .input(
+            z.object({
+                id,
+                contentId: z.string().cuid(),
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            return ctx.prisma.subject.update({
+                where: { id: input.id },
+                data: {
+                    contents: {
+                        create: [
+                            {
+                                content: {
+                                    connect: { id: input.contentId },
+                                },
+                            },
+                        ],
+                    },
+                },
+            });
+        }),
+    removeContent: publicProcedure
+        .input(
+            z.object({
+                id,
+                contentId: z.string().cuid(),
+            })
+        ).mutation(async ({ ctx, input }) => {
+            return ctx.prisma.contentInSubject.delete({
+                where: {
+                    contentId_subjectId: {
+                        contentId: input.contentId,
+                        subjectId: input.id,
+                    }
+                }
+            });
+        }
+    ),
+
     // TODO check rights
     delete: protectedProcedure()
         .input(z.object({ id }))

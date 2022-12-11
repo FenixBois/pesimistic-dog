@@ -1,6 +1,6 @@
 import type { Content } from '@prisma/client';
 import { ContentCard } from '../Content';
-import { Paper, Text, Title } from '@mantine/core';
+import { Paper, Stack, Text, Title } from "@mantine/core";
 
 interface TopicCardProps {
     title: string;
@@ -10,12 +10,12 @@ interface TopicCardProps {
 
 export function TopicCard({ title, description, contents }: TopicCardProps) {
     return (
-        <Paper shadow='md' radius='md' p='md'>
+        <Paper shadow='md' radius='md' p='lg'>
             <Title order={4}>{title}</Title>
             <Text>{description}</Text>
-            {contents?.map(({ id, title, link }) => (
-                <ContentCard key={id} title={title} link={link} />
-            ))}
+          <Stack mt={20}>{contents?.map(({ id, title, link }) => (
+            <ContentCard key={id} title={title} link={link} />
+          ))}</Stack>
         </Paper>
     );
 }

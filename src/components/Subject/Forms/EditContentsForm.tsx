@@ -1,58 +1,83 @@
-import { Button, Select, Title } from '@mantine/core';
+import { Button, Group, Select, Title } from '@mantine/core';
 import { ContentCard } from 'components/Content';
 import type { Content } from '@prisma/client';
-import { useState } from 'react';
 import { trpc } from '../../../utils/trpc';
 import { useForm } from '@mantine/form';
 
 interface EditContentsFormProps {
+    subjectId: string;
     contents: Content[];
 }
 
-export function EditContentsForm({ contents }: EditContentsFormProps) {
-    const [contentsState, setContentsState] = useState(contents);
+export function EditContentsForm({
+    contents,
+    subjectId,
+}: EditContentsFormProps) {
     const {
-        isLoading,
-        isError,
         data: databaseContents,
-        error
     } = trpc.content.getAll.useQuery();
+    const utils = trpc.useContext();
+
+    const addContent = trpc.subject.addContent.useMutation({
+        onError: (error) => {
+            console.log(error);
+        },
+        onSuccess: async () => {
+            await utils.subject.get.invalidate({ id: subjectId });
+
+            console.log('Success');
+        },
+    });
+    const removeContentMutation = trpc.subject.removeContent.useMutation({
+        onError: (error) => {
+            console.log(error);
+        },
+        onSuccess: async () => {
+            await utils.subject.get.invalidate({ id: subjectId });
+
+            console.log('Success');
+        },
+    });
 
     const form = useForm({
         initialValues: {
-            newContentId: ""
-        }
+            newContentId: '',
+        },
     });
 
     function handleSubmit() {
-
+        addContent.mutate({
+            id: subjectId,
+            contentId: form.values.newContentId,
+        });
     }
 
     function removeContent(id: string) {
-
+        removeContentMutation.mutate({ id: subjectId, contentId: id });
     }
 
     return (
         <div>
             <form>
-                <Select
-                    searchable
-                    data={
-                        databaseContents?.map((content) => ({
-                            label: content.title,
-                            value: content.id
-                        })) || []
-                    }
-                    {...form.getInputProps("newContentId")}
-                />
-                <Button onClick={() => handleSubmit()}>
-                    Add
-                </Button>
+                <Group mb={20}>
+                    <Select
+                        searchable
+                        data={
+                            databaseContents?.map((content) => ({
+                                label: content.title,
+                                value: content.id,
+                            })) || []
+                        }
+                        {...form.getInputProps('newContentId')}
+                    />
+                    <Button onClick={() => handleSubmit()}>Add</Button>
+                </Group>
             </form>
             <Title order={5} mb={20}>
                 Already added contents
             </Title>
-            {contentsState.map(({ id, title, link }) => (
+
+            {contents.map(({ id, title, link }) => (
                 <ContentCard
                     key={id}
                     title={title}
