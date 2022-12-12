@@ -1,9 +1,10 @@
-import { protectedProcedure, router } from "../trpc";
-import { Role } from "@prisma/client";
+import { publicProcedure, router } from '../trpc';
 
 export const userRouter = router({
-  getAll: protectedProcedure(Role.TEACHER, Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS)
-    .query(async ({ ctx }) => {
-      return ctx.prisma.user.findMany();
-    })
+    getAll: publicProcedure.query(async ({ ctx }) => {
+        return ctx.prisma.user.findMany();
+    }),
+    getAllTeachers: publicProcedure.query(async ({ ctx }) => {
+        return ctx.prisma.user.findMany({ where: { role: 'TEACHER' } });
+    }),
 });
