@@ -8,22 +8,24 @@ import {
     TextInput,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { trpc } from '../../../utils/trpc';
+import { trpc } from '../../utils/trpc';
 import type { Subject } from '@prisma/client';
 
 interface EditSubjectFormProps {
     subject: Subject;
-    submit: (editedSubject: Subject) => void;
+    submit: () => void;
 }
 
 export function EditSubjectForm({ subject, submit }: EditSubjectFormProps) {
     const teachers = trpc.user.getAllTeachers.useQuery().data;
+    const utils = trpc.useContext();
     const editSubjectMutation = trpc.subject.edit.useMutation({
         onError: (error) => {
             console.log(error);
         },
-        onSuccess: (data) => {
-            submit(data);
+        onSuccess: async () => {
+            await utils.subject.get.invalidate({ id: subject.id });
+            submit();
         },
     });
 

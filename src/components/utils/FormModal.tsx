@@ -16,7 +16,7 @@ export function FormModal({
 }: SearchFormProps) {
     return (
         <Modal
-            title={<h3>{title}</h3>}
+            title={<h2>{title}</h2>}
             opened={state}
             onClose={() => setState(false)}
             size='lg'
