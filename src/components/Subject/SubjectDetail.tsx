@@ -1,12 +1,12 @@
-import { Button, Group, Stack, Text, Title } from "@mantine/core";
-import { trpc } from "../../utils/trpc";
-import { ContentCard } from "../Content";
-import { TopicCard } from "./TopicCard";
-import { useState } from "react";
-import { EditSubjectContentsForm, EditSubjectForm } from "components/Subject";
-import { useRouter } from "next/router";
-import { FormModal, DeleteConfirmationModal } from "components/utils";
-import { CreateTopicForm } from "../Forms/CreateTopicForm";
+import { Button, Group, Stack, Text, Title } from '@mantine/core';
+import { trpc } from '../../utils/trpc';
+import { ContentCard } from '../Content';
+import { TopicCard } from './TopicCard';
+import { useState } from 'react';
+import { EditSubjectContentsForm, EditSubjectForm } from 'components/Subject';
+import { useRouter } from 'next/router';
+import { DeleteConfirmationModal, FormModal } from 'components/utils';
+import { CreateTopicForm } from '../Forms/CreateTopicForm';
 
 interface SubjectDetailProps {
     id: string;
@@ -63,7 +63,10 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
                     state={editModalState}
                     setState={setEditModalState}
                 >
-                    <EditSubjectForm subject={subject} submit={() => setEditModalState(false)} />
+                    <EditSubjectForm
+                        subject={subject}
+                        submit={() => setEditModalState(false)}
+                    />
                 </FormModal>
                 <Button
                     variant='light'
@@ -80,7 +83,6 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
                         contents={subject.contents.map(
                             ({ content }) => content
                         )}
-
                         subjectId={subject.id}
                     />
                 </FormModal>
@@ -91,7 +93,12 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
                 >
                     Delete subject
                 </Button>
-                <DeleteConfirmationModal title="Are you sure you want to delete this subject?" deleteModalState={deleteModalState} setDeleteModalState={(state) => setDeleteModalState(state)} confirmDelete={handleDelete}/>
+                <DeleteConfirmationModal
+                    title='Are you sure you want to delete this subject?'
+                    deleteModalState={deleteModalState}
+                    setDeleteModalState={(state) => setDeleteModalState(state)}
+                    confirmDelete={handleDelete}
+                />
             </Group>
             <Stack align='flex-start'>
                 {subject.contents.map(({ content }) => (
@@ -103,19 +110,18 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
                 ))}
             </Stack>
             <Stack align='flex-start'>
-                <Button variant='light'>Add topic</Button>
+                <Button
+                    variant='light'
+                    onClick={() => setCreateTopicModalState(true)}
+                >
+                    Add topic
+                </Button>
                 <FormModal
                     state={createTopicModalState}
                     setState={setCreateTopicModalState}
                     title='Create topic'
                 >
-                    <CreateTopicForm
-                        contents={subject.contents.map(
-                            ({ content }) => content
-                        )}
-
-                        subjectId={subject.id}
-                    />
+                    <CreateTopicForm subjectId={subject.id} />
                 </FormModal>
                 {subject.topics.map(({ id, title, description, contents }) => (
                     <TopicCard

@@ -20,4 +20,13 @@ export const contentRouter = router({
     getAll: publicProcedure.query(async ({ ctx }) => {
         return ctx.prisma.content.findMany();
     }),
+    get: publicProcedure
+        .input(
+            z.object({
+                id: z.string().cuid(),
+            })
+        )
+        .query(async ({ ctx, input }) => {
+            return ctx.prisma.content.findUnique({ where: { id: input.id } });
+        }),
 });

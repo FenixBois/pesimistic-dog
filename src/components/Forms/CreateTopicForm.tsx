@@ -1,24 +1,24 @@
-import { Button, Stack, TextInput, Title } from "@mantine/core";
-import type { Content } from "@prisma/client";
-import { trpc } from "../../utils/trpc";
-import { useForm } from "@mantine/form";
-import { EditContentsForm } from "./EditContentsForm";
+import { Button, Stack, TextInput, Title } from '@mantine/core';
+import { trpc } from '../../utils/trpc';
+import { useForm } from '@mantine/form';
 
 interface CreateTopicFormProps {
     subjectId: string;
-    contents: Content[];
 }
 
-export function CreateTopicForm({
-                                  subjectId,
-                                  contents,
-                              }: CreateTopicFormProps) {
+interface CreateTopicFormValues {
+    title: string;
+    description: string;
+    contentIds: string[];
+}
+
+export function CreateTopicForm({ subjectId }: CreateTopicFormProps) {
     const utils = trpc.useContext();
-    const form = useForm({
+    const form = useForm<CreateTopicFormValues>({
         initialValues: {
             title: '',
             description: '',
-            contents: [],
+            contentIds: [],
         },
     });
 
@@ -31,15 +31,12 @@ export function CreateTopicForm({
         },
     });
 
-    function addContent(id: string) {
-        form.values.contents.push(id)
-    }
-
-    function removeContent(id: string) {
-        
-    }
-
-    function createTopic(id: string) {
+    function createTopic() {
+        createTopicMutation.mutate({
+            subjectId,
+            title: form.values.title,
+            description: form.values.description,
+        });
     }
 
     return (
@@ -54,20 +51,23 @@ export function CreateTopicForm({
                     />
                     <TextInput
                         label='Description'
-                        placeholder='description'
+                        placeholder='Description'
                         {...form.getInputProps('description')}
                     />
                 </Stack>
             </form>
-            <Stack mt='xl'>
-                <Title order={4}>Contents</Title>
-                <EditContentsForm
-                    contents={contents}
-                    removeContent={(id) => removeContent(id)}
-                    handleSubmit={(id) => addContent(id)}
-                />
-            </Stack>
-            <Button onClick={createTopic} mt='lg'>Create topic</Button>
+            {/*TODO: Add contents*/}
+            {/*<Stack mt='xl'>*/}
+            {/*    <Title order={4}>Contents</Title>*/}
+            {/*    <EditContentsForm*/}
+            {/*        contents={contents}*/}
+            {/*        removeContent={(id) => removeContent(id)}*/}
+            {/*        handleSubmit={(id) => addContent(id)}*/}
+            {/*    />*/}
+            {/*</Stack>*/}
+            <Button onClick={createTopic} mt='lg'>
+                Create topic
+            </Button>
         </div>
     );
 }
