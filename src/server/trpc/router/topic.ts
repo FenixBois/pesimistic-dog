@@ -60,5 +60,45 @@ export const topicRouter = router({
     .mutation(async ({ ctx, input }) => {
       const where = { id: input.id };
       return ctx.prisma.topic.delete({ where });
-    })
+    }),
+    addContent: publicProcedure
+        .input(
+            z.object({
+                id,
+                contentId: z.string().cuid(),
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            return ctx.prisma.topic.update({
+                where: { id: input.id },
+                data: {
+                    contents: {
+                        create: [
+                            {
+                                content: {
+                                    connect: { id: input.contentId },
+                                },
+                            },
+                        ],
+                    },
+                },
+            });
+        }),
+    removeContent: publicProcedure
+        .input(
+            z.object({
+                id,
+                contentId: z.string().cuid(),
+            })
+        ).mutation(async ({ ctx, input }) => {
+                return ctx.prisma.contentInTopic.delete({
+                    where: {
+                        contentId_topicId: {
+                            contentId: input.contentId,
+                            topicId: input.id,
+                        }
+                    }
+                });
+            }
+        ),
 });
