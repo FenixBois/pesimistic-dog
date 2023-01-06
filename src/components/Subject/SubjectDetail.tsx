@@ -6,6 +6,7 @@ import { useState } from "react";
 import { EditSubjectContentsForm, EditSubjectForm } from "components/Subject";
 import { useRouter } from "next/router";
 import { FormModal, DeleteConfirmationModal } from "components/utils";
+import { CreateTopicForm } from "../Forms/CreateTopicForm";
 
 interface SubjectDetailProps {
     id: string;
@@ -34,6 +35,7 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
     const [editModalState, setEditModalState] = useState(false);
     const [deleteModalState, setDeleteModalState] = useState(false);
     const [editContentsModalState, setEditContentsModalState] = useState(false);
+    const [createTopicModalState, setCreateTopicModalState] = useState(false);
 
     function handleDelete() {
         if (!subject) return;
@@ -101,7 +103,20 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
                 ))}
             </Stack>
             <Stack align='flex-start'>
-                {/*<Button variant='light'>Add topic</Button>*/}
+                <Button variant='light'>Add topic</Button>
+                <FormModal
+                    state={createTopicModalState}
+                    setState={setCreateTopicModalState}
+                    title='Create topic'
+                >
+                    <CreateTopicForm
+                        contents={subject.contents.map(
+                            ({ content }) => content
+                        )}
+
+                        subjectId={subject.id}
+                    />
+                </FormModal>
                 {subject.topics.map(({ id, title, description, contents }) => (
                     <TopicCard
                         key={id}
