@@ -25,9 +25,7 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
         isError,
         data: subject,
         error,
-    } = trpc.subject.get.useQuery({
-        id,
-    }); // TODO: Throws error when page is loaded directly and id is still undefinded
+    } = trpc.subject.get.useQuery({ id });
 
     const deleteSubjectMutation = trpc.subject.delete.useMutation({
         onError: (error) => {
@@ -73,42 +71,50 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
 
     return (
         <Stack>
-            <Title>{subject.title}</Title>
+            <Flex justify='space-between'>
+                <Title>{subject.title}</Title>
+
+                <Group>
+                    <Button
+                        variant='light'
+                        onClick={() => setEditModalState(true)}
+                    >
+                        Edit subject details
+                    </Button>
+                    <FormModal
+                        title='Edit subject details'
+                        state={editModalState}
+                        setState={setEditModalState}
+                    >
+                        <EditSubjectForm
+                            subject={subject}
+                            submit={() => setEditModalState(false)}
+                        />
+                    </FormModal>
+                    <Button
+                        variant='light'
+                        color='red'
+                        onClick={() => setDeleteModalState(true)}
+                    >
+                        Delete subject
+                    </Button>
+                    <DeleteConfirmationModal
+                        title='Are you sure you want to delete this subject?'
+                        deleteModalState={deleteModalState}
+                        setDeleteModalState={(state) =>
+                            setDeleteModalState(state)
+                        }
+                        confirmDelete={handleDelete}
+                    />
+                </Group>
+            </Flex>
             <Text>{subject.description}</Text>
             <Title order={5}>
                 Teacher: {subject.teacher.name}, Credits:{' '}
                 {subject.numberOfCredits}, Degree: {subject.degreeOfStudy},
                 Language: {subject.language}
             </Title>
-            <Group>
-                <Button variant='light' onClick={() => setEditModalState(true)}>
-                    Edit subject details
-                </Button>
-                <FormModal
-                    title='Edit subject details'
-                    state={editModalState}
-                    setState={setEditModalState}
-                >
-                    <EditSubjectForm
-                        subject={subject}
-                        submit={() => setEditModalState(false)}
-                    />
-                </FormModal>
-                <Button
-                    variant='light'
-                    color='red'
-                    onClick={() => setDeleteModalState(true)}
-                >
-                    Delete subject
-                </Button>
-                <DeleteConfirmationModal
-                    title='Are you sure you want to delete this subject?'
-                    deleteModalState={deleteModalState}
-                    setDeleteModalState={(state) => setDeleteModalState(state)}
-                    confirmDelete={handleDelete}
-                />
-            </Group>
-            <Stack align='flex-start'>
+            <Stack align={'stretch'}>
                 {subject.contents.map(({ content }) => (
                     <ContentCard
                         key={content.id}
@@ -165,7 +171,7 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
                     </Button>
                 </Flex>
             </Stack>
-            <Stack align='flex-start'>
+            <Stack>
                 <FormModal
                     state={createTopicModalState}
                     setState={setCreateTopicModalState}
@@ -183,6 +189,8 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
                         contents={contents.map(({ content }) => content)}
                         removable
                         editable
+                        edit={() => utils.subject.get.invalidate()}
+                        remove={() => utils.subject.get.invalidate()}
                     />
                 ))}
                 <Button

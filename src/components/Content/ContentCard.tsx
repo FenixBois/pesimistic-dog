@@ -1,8 +1,18 @@
-import { ActionIcon, Group, Paper, Stack, Text } from '@mantine/core';
+import {
+    ActionIcon,
+    Card,
+    Group,
+    NavLink,
+    Paper,
+    Stack,
+    Text,
+    Title,
+} from '@mantine/core';
 import { AdjustmentsVerticalIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import { useState } from 'react';
 import { FormModal } from 'components/utils';
 import { EditContentForm } from '../Forms/EditContentForm';
+import Link from 'next/link';
 
 interface ContentCardProps {
     id: string;
@@ -26,11 +36,12 @@ export function ContentCard({
     const [editModalState, setEditModalState] = useState(false);
 
     return (
-        <Paper withBorder px='lg' py='sm' w={500}>
+        <Card withBorder px='lg' py='sm'>
             <Group position='apart'>
                 <Stack spacing='xs'>
-                    <Text>{title}</Text>
-                    <Text>{link}</Text>
+                    <Link href={link} target='_blank'>
+                        {title}
+                    </Link>
                 </Stack>
                 <Group>
                     {editable && (
@@ -67,6 +78,6 @@ export function ContentCard({
                     )}
                 </Group>
             </Group>
-        </Paper>
+        </Card>
     );
 }

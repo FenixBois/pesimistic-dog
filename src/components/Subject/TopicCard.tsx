@@ -1,11 +1,21 @@
 import type { Content } from '@prisma/client';
 import { ContentCard } from '../Content';
-import { ActionIcon, Group, Paper, Stack, Text, Title } from '@mantine/core';
+import {
+    ActionIcon,
+    Button,
+    Card,
+    Group,
+    Paper,
+    Stack,
+    Text,
+    Title,
+} from '@mantine/core';
 import { AdjustmentsVerticalIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import { EditTopicForm } from 'components/Forms/EditTopicForm';
 import { useState } from 'react';
-import { FormModal, DeleteConfirmationModal } from 'components/utils';
+import { DeleteConfirmationModal, FormModal } from 'components/utils';
 import { trpc } from '../../utils/trpc';
+import { CreateContentForm, EditContentsForm } from '../Forms';
 
 interface TopicCardProps {
     subjectId: string;
@@ -32,6 +42,10 @@ export function TopicCard({
     const utils = trpc.useContext();
     const [editTopicModalState, setEditTopicModalState] = useState(false);
     const [deleteTopicModalState, setDeleteTopicModalState] = useState(false);
+    const [createContentModalState, setCreateContentModalState] =
+        useState(false);
+    const [addExistingContentModalState, setAddExistingContentModalState] =
+        useState(false);
 
     const removeTopicMutation = trpc.topic.delete.useMutation({
         onSuccess: async () => {
@@ -50,13 +64,9 @@ export function TopicCard({
     }
 
     const addContentMutation = trpc.topic.addContent.useMutation({
-        onError: (error) => {
-            console.log(error);
-        },
         onSuccess: async () => {
-            await utils.subject.get.invalidate({ id: subjectId });
-
-            console.log('Success');
+            setAddExistingContentModalState(false);
+            setCreateContentModalState(false);
         },
     });
 
@@ -72,7 +82,7 @@ export function TopicCard({
     }
 
     return (
-        <Paper withBorder radius='md' p='lg'>
+        <Card withBorder radius='md' p='lg'>
             <Group position='apart'>
                 <Stack w={400} spacing='xs'>
                     <Title order={4}>{title}</Title>
@@ -82,7 +92,6 @@ export function TopicCard({
                     {removable && (
                         <div>
                             <ActionIcon
-                                variant='outline'
                                 color='red'
                                 onClick={() => setDeleteTopicModalState(true)}
                             >
@@ -136,7 +145,43 @@ export function TopicCard({
                         remove={() => removeContent(id)}
                     />
                 ))}
+                {editable && (
+                    <>
+                        <Button
+                            onClick={() =>
+                                setAddExistingContentModalState(true)
+                            }
+                        >
+                            Add existing
+                        </Button>
+                        <FormModal
+                            state={addExistingContentModalState}
+                            setState={setAddExistingContentModalState}
+                            title={'Create content'}
+                        >
+                            <EditContentsForm
+                                contents={new Set(contents.map((c) => c.id))}
+                                handleSubmit={addContent}
+                            ></EditContentsForm>
+                        </FormModal>
+                        <Button
+                            variant={'outline'}
+                            onClick={() => setCreateContentModalState(true)}
+                        >
+                            Create new
+                        </Button>
+                        <FormModal
+                            state={createContentModalState}
+                            setState={setCreateContentModalState}
+                            title={'Create content'}
+                        >
+                            <CreateContentForm
+                                submit={(content) => addContent(content.id)}
+                            ></CreateContentForm>
+                        </FormModal>
+                    </>
+                )}
             </Stack>
-        </Paper>
+        </Card>
     );
 }

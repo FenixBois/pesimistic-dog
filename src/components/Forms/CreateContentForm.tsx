@@ -52,7 +52,7 @@ export function CreateContentForm({ submit }: CreateContentFormProps) {
                     />
                 </Stack>
                 <Button type='submit' mt='lg'>
-                    CreateContent
+                    Create content
                 </Button>
             </form>
         </div>
