@@ -1,4 +1,4 @@
-POST localhost:3000/api/trpc/subject.create
+POST {{trpc}}/subject.create
 Content-Type: application/json
 
 {
@@ -14,38 +14,4 @@ Content-Type: application/json
 }
 
 ###
-GET localhost:3000/api/trpc/subject.get?input=%7B%0A%20%20%22json%22%3A%20%7B%0A%20%20%20%20%22id%22%3A%20%22clau30kld0007rlpwomphca0p%22%0A%20%20%7D%0A%7D
-
-
-###
-POST localhost:3000/api/trpc/studyProgramme.create
-Content-Type: application/json
-
-{
-  "json": {
-    "title": "A",
-    "schoolId": "cjld2cyuq0000t3rmniod1foy"
-  }
-}
-
-###
-POST localhost:3000/api/trpc/topic.create
-Content-Type: application/json
-
-{
-  "json": {
-    "title": "ABC",
-    "description": "def",
-    "subjectId": "clau30kld0007rlpwomphca0p"
-  }
-}
-###
-POST localhost:3000/api/trpc/content.create
-Content-Type: application/json
-
-{
-  "json": {
-    "title": "ABC",
-    "link": "def"
-  }
-}
+GET {{trpc}}/subject.get?input=%7B%0A%20%20%22json%22%3A%20%7B%0A%20%20%20%20%22id%22%3A%20%22clau30kld0007rlpwomphca0p%22%0A%20%20%7D%0A%7D

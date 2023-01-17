@@ -1,0 +1,12 @@
+
+
+###
+POST {{trpc}}/studyProgramme.create
+Content-Type: application/json
+
+{
+  "json": {
+    "title": "A",
+    "schoolId": "cjld2cyuq0000t3rmniod1foy"
+  }
+}

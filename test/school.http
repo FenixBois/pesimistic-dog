@@ -1,0 +1,12 @@
+GET {{trpc}}/school.get
+
+###
+POST {{trpc}}/school.edit
+Content-Type: application/json
+
+{
+  "json":{
+    "id": "cjld2cyuq0000t3rmniod1foy",
+    "name": "Nízká škola života"
+  }
+}
