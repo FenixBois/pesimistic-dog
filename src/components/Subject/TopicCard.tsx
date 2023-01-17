@@ -4,6 +4,7 @@ import {
     ActionIcon,
     Button,
     Card,
+    Flex,
     Group,
     Paper,
     Stack,
@@ -67,6 +68,7 @@ export function TopicCard({
         onSuccess: async () => {
             setAddExistingContentModalState(false);
             setCreateContentModalState(false);
+            edit?.();
         },
     });
 
@@ -88,25 +90,7 @@ export function TopicCard({
                     <Title order={4}>{title}</Title>
                     <Text>{description}</Text>
                 </Stack>
-                <Stack>
-                    {removable && (
-                        <div>
-                            <ActionIcon
-                                color='red'
-                                onClick={() => setDeleteTopicModalState(true)}
-                            >
-                                <XMarkIcon />
-                            </ActionIcon>
-                            <DeleteConfirmationModal
-                                title='Are you sure you want to delete this topic?'
-                                deleteModalState={deleteTopicModalState}
-                                setDeleteModalState={(state) =>
-                                    setDeleteTopicModalState(state)
-                                }
-                                confirmDelete={removeTopic}
-                            />
-                        </div>
-                    )}
+                <Flex>
                     {editable && (
                         <div>
                             <ActionIcon
@@ -130,7 +114,25 @@ export function TopicCard({
                             </FormModal>
                         </div>
                     )}
-                </Stack>
+                    {removable && (
+                        <div>
+                            <ActionIcon
+                                color='red'
+                                onClick={() => setDeleteTopicModalState(true)}
+                            >
+                                <XMarkIcon />
+                            </ActionIcon>
+                            <DeleteConfirmationModal
+                                title='Are you sure you want to delete this topic?'
+                                deleteModalState={deleteTopicModalState}
+                                setDeleteModalState={(state) =>
+                                    setDeleteTopicModalState(state)
+                                }
+                                confirmDelete={removeTopic}
+                            />
+                        </div>
+                    )}
+                </Flex>
             </Group>
             <Stack mt={20}>
                 {contents?.map(({ id, title, link }) => (
