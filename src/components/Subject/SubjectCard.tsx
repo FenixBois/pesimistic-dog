@@ -4,7 +4,7 @@ import Link from 'next/link';
 interface SubjectCardProps {
     id: string;
     title: string;
-    credits: number;
+    numberOfCredits: number;
     degree: string;
     language: string;
 }
@@ -12,7 +12,7 @@ interface SubjectCardProps {
 export function SubjectCard({
     id,
     title,
-    credits,
+    numberOfCredits,
     degree,
     language,
 }: SubjectCardProps) {
@@ -21,7 +21,8 @@ export function SubjectCard({
             <Paper shadow='sm' radius='md' p='lg'>
                 <Title order={4}>{title}</Title>
                 <Text>
-                    Credits: {credits}, Degree: {degree}, Language: {language}
+                    Credits: {numberOfCredits}, Degree: {degree}, Language:{' '}
+                    {language}
                 </Text>
             </Paper>
         </Link>
