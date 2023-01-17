@@ -1,9 +1,7 @@
 import React from 'react';
 import { useForm } from '@mantine/form';
-import { InferQueryInput } from '../../utils/trpc';
-import { AppRouter } from '../../server/trpc/router/_app';
 import { TextInput } from '@mantine/core';
-import { CreateContentInputType } from "../../types/content";
+import type { CreateContentInputType } from "../../types/content";
 
 // TODO data
 export const ContentForm: React.FC = () => {
@@ -11,8 +9,7 @@ export const ContentForm: React.FC = () => {
 
     return (
         <form onSubmit={form.onSubmit((values) => console.log(values))}>
-          <
-            <TextInput
+          <TextInput
                 withAsterisk
                 label='Title'
                 placeholder='Programování a algoritmy'
