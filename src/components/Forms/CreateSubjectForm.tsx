@@ -1,3 +1,8 @@
+import type React from 'react';
+import { useForm, zodResolver } from '@mantine/form';
+import type { CreateSubjectInputType } from '../../types/subject';
+import { createSubjectInput } from '../../types/subject';
+import { trpc } from '../../utils/trpc';
 import {
     Button,
     Group,
@@ -7,53 +12,36 @@ import {
     Textarea,
     TextInput,
 } from '@mantine/core';
-import { useForm, zodResolver } from '@mantine/form';
-import { trpc } from '../../utils/trpc';
-import type { Subject } from '@prisma/client';
-import {
-    editSubjectInput,
-    editSubjectInputData,
-    EditSubjectInputType,
-} from '../../types/subject';
 
-interface EditSubjectFormProps {
-    subject: Subject;
-    submit: () => void;
+interface CreateSubjectFormProps {
+    onSubmit?: () => void;
 }
 
-export function EditSubjectForm({ subject, submit }: EditSubjectFormProps) {
+export const CreateSubjectForm: React.FC<CreateSubjectFormProps> = ({
+    onSubmit,
+}: CreateSubjectFormProps) => {
     const teachers = trpc.user.getAllTeachers.useQuery().data;
-    const utils = trpc.useContext();
-    const editSubjectMutation = trpc.subject.edit.useMutation({
+    const studyProgrammes = trpc.studyProgramme.getAll.useQuery().data;
+    console.debug(studyProgrammes);
+    const createSubjectMutation = trpc.subject.create.useMutation({
         onSuccess: async () => {
-            await utils.subject.get.invalidate({ id: subject.id });
-            submit();
+            onSubmit?.();
         },
     });
 
-    const form = useForm<Omit<EditSubjectInputType, 'id'>>({
-        initialValues: {
-            title: subject.title,
-            description: subject.description,
-            numberOfCredits: subject.numberOfCredits,
-            degreeOfStudy: subject.degreeOfStudy,
-            language: subject.language,
-            teacherId: subject.teacherId,
-        },
+    const form = useForm<CreateSubjectInputType>({
         validateInputOnBlur: true,
-        validate: zodResolver(editSubjectInputData),
+        validate: zodResolver(createSubjectInput),
     });
 
-    if (editSubjectMutation.isLoading) return <p>Editing subject...</p>;
-    if (editSubjectMutation.isError)
-        return <p>{editSubjectMutation.error.message}</p>;
+    console.debug(form.errors);
+
+    if (createSubjectMutation.isLoading) return <p>Creating subject...</p>;
+    if (createSubjectMutation.isError)
+        return <p>{createSubjectMutation.error.message}</p>;
 
     return (
-        <form
-            onSubmit={form.onSubmit((v) =>
-                editSubjectMutation.mutate({ ...v, id: subject.id })
-            )}
-        >
+        <form onSubmit={form.onSubmit((v) => createSubjectMutation.mutate(v))}>
             <Stack>
                 <TextInput
                     label='Title'
@@ -99,10 +87,23 @@ export function EditSubjectForm({ subject, submit }: EditSubjectFormProps) {
                     }
                     {...form.getInputProps('teacherId')}
                 />
+                <Select
+                    searchable
+                    label='Study programme'
+                    nothingFound='No study programmes found'
+                    placeholder='Pick a study programme'
+                    data={
+                        studyProgrammes?.map((s) => ({
+                            value: s.id,
+                            label: s.title,
+                        })) || []
+                    }
+                    {...form.getInputProps('studyProgrammeId')}
+                />
                 <Group>
                     <Button type='submit'>Save</Button>
                 </Group>
             </Stack>
         </form>
     );
-}
+};

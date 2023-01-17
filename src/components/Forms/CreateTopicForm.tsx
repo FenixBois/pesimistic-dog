@@ -1,6 +1,7 @@
 import { Button, Stack, TextInput, Title } from '@mantine/core';
 import { trpc } from '../../utils/trpc';
-import { useForm } from '@mantine/form';
+import { useForm, zodResolver } from '@mantine/form';
+import { createTopicInput } from '../../types/topic';
 
 interface CreateTopicFormProps {
     subjectId: string;
@@ -20,6 +21,8 @@ export function CreateTopicForm({ subjectId }: CreateTopicFormProps) {
             description: '',
             contentIds: [],
         },
+        validate: zodResolver(createTopicInput),
+        validateInputOnBlur: true,
     });
 
     const createTopicMutation = trpc.topic.create.useMutation({
