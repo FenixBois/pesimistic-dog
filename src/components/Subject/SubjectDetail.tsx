@@ -104,6 +104,7 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
                 {subject.contents.map(({ content }) => (
                     <ContentCard
                         key={content.id}
+                        id={content.id}
                         title={content.title}
                         link={content.link}
                     />

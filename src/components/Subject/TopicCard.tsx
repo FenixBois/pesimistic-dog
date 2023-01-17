@@ -98,7 +98,7 @@ export function TopicCard({
             </Group>
             <Stack mt={20}>
                 {contents?.map(({ id, title, link }) => (
-                    <ContentCard key={id} title={title} link={link} />
+                    <ContentCard key={id} id={id} title={title} link={link} />
                 ))}
             </Stack>
         </Paper>

@@ -43,6 +43,7 @@ export function EditContentsForm({contents, removeContent, handleSubmit} : EditC
             <Stack>{contents.map(({ id, title, link }) => (
                 <ContentCard
                     key={id}
+                    id={id}
                     title={title}
                     link={link}
                     removable
