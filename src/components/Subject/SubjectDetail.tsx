@@ -1,9 +1,13 @@
-import { Button, Group, Stack, Text, Title } from '@mantine/core';
+import { Button, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { trpc } from '../../utils/trpc';
 import { ContentCard } from '../Content';
 import { TopicCard } from './TopicCard';
 import { useState } from 'react';
-import { EditSubjectContentsForm, EditSubjectForm } from 'components/Subject';
+import {
+    CreateContentForm,
+    EditSubjectContentsForm,
+    EditSubjectForm,
+} from 'components/Subject';
 import { useRouter } from 'next/router';
 import { DeleteConfirmationModal, FormModal } from 'components/utils';
 import { CreateTopicForm } from '../Forms/CreateTopicForm';
@@ -14,6 +18,8 @@ interface SubjectDetailProps {
 
 export function SubjectDetail({ id }: SubjectDetailProps) {
     const router = useRouter();
+    const utils = trpc.useContext();
+
     const {
         isLoading,
         isError,
@@ -32,10 +38,30 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
         },
     });
 
+    const addContentMutation = trpc.subject.addContent.useMutation({
+        onSettled: async () => {
+            setCreateContentModalState(false);
+        },
+        onSuccess: async () => {
+            await utils.subject.get.invalidate({ id });
+        },
+    });
+
+    const removeContentMutation = trpc.subject.removeContent.useMutation({
+        onError: (error) => {
+            console.log(error);
+        },
+        onSuccess: async () => {
+            await utils.subject.get.invalidate({ id: id });
+        },
+    });
+
     const [editModalState, setEditModalState] = useState(false);
     const [deleteModalState, setDeleteModalState] = useState(false);
     const [editContentsModalState, setEditContentsModalState] = useState(false);
     const [createTopicModalState, setCreateTopicModalState] = useState(false);
+    const [createContentModalState, setCreateContentModalState] =
+        useState(false);
 
     function handleDelete() {
         if (!subject) return;
@@ -70,24 +96,6 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
                 </FormModal>
                 <Button
                     variant='light'
-                    onClick={() => setEditContentsModalState(true)}
-                >
-                    Edit contents
-                </Button>
-                <FormModal
-                    state={editContentsModalState}
-                    setState={setEditContentsModalState}
-                    title='Edit contents'
-                >
-                    <EditSubjectContentsForm
-                        contents={subject.contents.map(
-                            ({ content }) => content
-                        )}
-                        subjectId={subject.id}
-                    />
-                </FormModal>
-                <Button
-                    variant='light'
                     color='red'
                     onClick={() => setDeleteModalState(true)}
                 >
@@ -104,19 +112,60 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
                 {subject.contents.map(({ content }) => (
                     <ContentCard
                         key={content.id}
-                        id={content.id}
-                        title={content.title}
-                        link={content.link}
+                        {...content}
+                        removable={true}
+                        editable={true}
+                        edit={() => {
+                            utils.subject.get.invalidate({ id });
+                        }}
+                        remove={() =>
+                            removeContentMutation.mutate({
+                                id,
+                                contentId: content.id,
+                            })
+                        }
                     />
                 ))}
+                <Flex gap='md'>
+                    <Button
+                        variant='light'
+                        onClick={() => setEditContentsModalState(true)}
+                    >
+                        Add existing content
+                    </Button>
+                    <FormModal
+                        state={editContentsModalState}
+                        setState={setEditContentsModalState}
+                        title='Edit contents'
+                    >
+                        <EditSubjectContentsForm
+                            contents={subject.contents.map(
+                                ({ content }) => content
+                            )}
+                            subjectId={subject.id}
+                            onAdded={() => setEditContentsModalState(false)}
+                        />
+                    </FormModal>
+                    <FormModal
+                        state={createContentModalState}
+                        setState={setCreateContentModalState}
+                        title='Create content'
+                    >
+                        <CreateContentForm
+                            submit={(content) =>
+                                addContentMutation.mutate({
+                                    contentId: content.id,
+                                    id,
+                                })
+                            }
+                        ></CreateContentForm>
+                    </FormModal>
+                    <Button onClick={() => setCreateContentModalState(true)}>
+                        Create content
+                    </Button>
+                </Flex>
             </Stack>
             <Stack align='flex-start'>
-                <Button
-                    variant='light'
-                    onClick={() => setCreateTopicModalState(true)}
-                >
-                    Add topic
-                </Button>
                 <FormModal
                     state={createTopicModalState}
                     setState={setCreateTopicModalState}
@@ -136,6 +185,12 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
                         editable
                     />
                 ))}
+                <Button
+                    variant='light'
+                    onClick={() => setCreateTopicModalState(true)}
+                >
+                    Add topic
+                </Button>
             </Stack>
         </Stack>
     );

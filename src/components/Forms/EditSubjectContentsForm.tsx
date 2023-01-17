@@ -1,33 +1,21 @@
-import type { Content } from "@prisma/client";
-import { trpc } from "../../utils/trpc";
-import { EditContentsForm } from "./EditContentsForm";
+import type { Content } from '@prisma/client';
+import { trpc } from '../../utils/trpc';
+import { EditContentsForm } from './EditContentsForm';
 
 interface EditContentsFormProps {
     subjectId: string;
     contents: Content[];
+    onAdded: () => void;
 }
 
 export function EditSubjectContentsForm({
     contents,
     subjectId,
+    onAdded,
 }: EditContentsFormProps) {
     const utils = trpc.useContext();
 
     const addContent = trpc.subject.addContent.useMutation({
-        onError: (error) => {
-            console.log(error);
-        },
-        onSuccess: async () => {
-            await utils.subject.get.invalidate({ id: subjectId });
-
-            console.log('Success');
-        },
-    });
-
-    const removeContentMutation = trpc.subject.removeContent.useMutation({
-        onError: (error) => {
-            console.log(error);
-        },
         onSuccess: async () => {
             await utils.subject.get.invalidate({ id: subjectId });
 
@@ -40,16 +28,12 @@ export function EditSubjectContentsForm({
             id: subjectId,
             contentId: id,
         });
-    }
-
-    function removeContent(id: string) {
-        removeContentMutation.mutate({ id: subjectId, contentId: id });
+        onAdded();
     }
 
     return (
         <EditContentsForm
-            contents={contents}
-            removeContent={removeContent}
+            contents={new Set(contents.map((c) => c.id))}
             handleSubmit={handleSubmit}
         />
     );

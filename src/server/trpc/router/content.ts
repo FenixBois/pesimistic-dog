@@ -2,7 +2,13 @@ import { z } from 'zod';
 
 import { protectedProcedure, publicProcedure, router } from '../trpc';
 import { Role } from '@prisma/client';
-import { id, title, link, createContentInput } from '../../../types/content';
+import {
+    id,
+    title,
+    link,
+    createContentInput,
+    editContentInput,
+} from '../../../types/content';
 
 export const contentRouter = router({
     create: protectedProcedure(
@@ -30,7 +36,7 @@ export const contentRouter = router({
             return ctx.prisma.content.delete({ where });
         }),
     edit: protectedProcedure()
-        .input(z.object({ id, title: title.optional(), link: link.optional() }))
+        .input(editContentInput)
         .mutation(async ({ ctx, input }) => {
             const where = { id: input.id };
             const data = { title: input.title, link: input.link };

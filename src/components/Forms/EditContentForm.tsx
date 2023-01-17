@@ -1,6 +1,7 @@
 import { Button, Stack, TextInput, Title } from '@mantine/core';
 import { trpc } from '../../utils/trpc';
-import { useForm } from '@mantine/form';
+import { useForm, zodResolver } from '@mantine/form';
+import { editContentInput } from '../../types/content';
 
 interface EditContentFormProps {
     id: string;
@@ -14,13 +15,20 @@ interface EditContentFormValues {
     link: string;
 }
 
-export function EditContentForm({ submit, id, title, link }: EditContentFormProps) {
+export function EditContentForm({
+    submit,
+    id,
+    title,
+    link,
+}: EditContentFormProps) {
     const utils = trpc.useContext();
     const form = useForm<EditContentFormValues>({
         initialValues: {
             title: title,
             link: link,
         },
+        validate: zodResolver(editContentInput),
+        validateInputOnBlur: true,
     });
 
     const editContentMutation = trpc.content.edit.useMutation({
@@ -56,10 +64,10 @@ export function EditContentForm({ submit, id, title, link }: EditContentFormProp
                         {...form.getInputProps('link')}
                     />
                 </Stack>
+                <Button onClick={editContent} mt='lg'>
+                    Submit
+                </Button>
             </form>
-            <Button onClick={editContent} mt='lg'>
-                Submit
-            </Button>
         </div>
     );
 }

@@ -1,9 +1,8 @@
 import { ActionIcon, Group, Paper, Stack, Text } from '@mantine/core';
 import { AdjustmentsVerticalIcon, XMarkIcon } from '@heroicons/react/20/solid';
-import { useState } from "react";
-import { FormModal } from "components/utils";
-import { EditSubjectForm } from "components/Forms";
-import { EditContentForm } from "../Forms/EditContentForm";
+import { useState } from 'react';
+import { FormModal } from 'components/utils';
+import { EditContentForm } from '../Forms/EditContentForm';
 
 interface ContentCardProps {
     id: string;
@@ -22,6 +21,7 @@ export function ContentCard({
     editable,
     removable,
     remove,
+    edit,
 }: ContentCardProps) {
     const [editModalState, setEditModalState] = useState(false);
 
@@ -34,7 +34,10 @@ export function ContentCard({
                 </Stack>
                 <Group>
                     {editable && (
-                        <ActionIcon variant='default' onClick={() => setEditModalState(true)}>
+                        <ActionIcon
+                            variant='default'
+                            onClick={() => setEditModalState(true)}
+                        >
                             <AdjustmentsVerticalIcon width={18} />
                         </ActionIcon>
                     )}
@@ -47,7 +50,10 @@ export function ContentCard({
                             id={id}
                             title={title}
                             link={link}
-                            submit={() => setEditModalState(false)}
+                            submit={() => {
+                                setEditModalState(false);
+                                edit?.();
+                            }}
                         />
                     </FormModal>
                     {removable && (
