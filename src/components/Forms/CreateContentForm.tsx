@@ -1,9 +1,13 @@
 import { Button, Stack, TextInput, Title } from '@mantine/core';
 import { trpc } from '../../utils/trpc';
-import { useForm } from '@mantine/form';
+import { useForm, zodResolver } from '@mantine/form';
+import {
+    createContentInput,
+    CreateContentInputType,
+} from '../../types/content';
 
 interface CreateContentFormProps {
-    submit: () => void;
+    submit: (content) => void;
 }
 
 interface CreateContentFormValues {
@@ -14,34 +18,28 @@ interface CreateContentFormValues {
 export function CreateContentForm({ submit }: CreateContentFormProps) {
     const utils = trpc.useContext();
     const form = useForm<CreateContentFormValues>({
-        initialValues: {
-            title: '',
-            link: '',
-        },
+        validate: zodResolver(createContentInput),
+        validateInputOnBlur: true,
     });
 
     const createContentMutation = trpc.content.create.useMutation({
         onError: (error) => {
             console.log(error);
         },
-        onSuccess: async () => {
-            submit();
+        onSuccess: async (content) => {
+            submit(content);
             await utils.content.invalidate();
         },
     });
 
-    function createContent() {
-        createContentMutation.mutate({
-            title: form.values.title,
-            link: form.values.link,
-        });
+    function createContent(data: CreateContentInputType) {
+        createContentMutation.mutate(data);
     }
 
     return (
         <div>
-            <form>
+            <form onSubmit={form.onSubmit(createContent)}>
                 <Stack>
-                    <Title order={4}>Details</Title>
                     <TextInput
                         label='Title'
                         placeholder='Title'
@@ -53,10 +51,10 @@ export function CreateContentForm({ submit }: CreateContentFormProps) {
                         {...form.getInputProps('link')}
                     />
                 </Stack>
+                <Button type='submit' mt='lg'>
+                    CreateContent
+                </Button>
             </form>
-            <Button onClick={createContent} mt='lg'>
-                CreateContent
-            </Button>
         </div>
     );
 }
