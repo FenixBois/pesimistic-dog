@@ -1,0 +1,12 @@
+
+###
+POST {{trpc}}/topic.create
+Content-Type: application/json
+
+{
+  "json": {
+    "title": "ABC",
+    "description": "def",
+    "subjectId": "clau30kld0007rlpwomphca0p"
+  }
+}

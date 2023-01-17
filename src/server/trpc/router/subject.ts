@@ -14,6 +14,7 @@ import {
     teacherId,
     title,
 } from '../../../types/subject';
+import {id as contentId} from "../../../types/content";
 
 export const subjectRouter = router({
     create: protectedProcedure(
@@ -83,12 +84,7 @@ export const subjectRouter = router({
             return ctx.prisma.subject.update({ where, data });
         }),
     addContent: publicProcedure
-        .input(
-            z.object({
-                id,
-                contentId: z.string().cuid(),
-            })
-        )
+        .input(z.object({ id, contentId }))
         .mutation(async ({ ctx, input }) => {
             return ctx.prisma.subject.update({
                 where: { id: input.id },
@@ -106,12 +102,9 @@ export const subjectRouter = router({
             });
         }),
     removeContent: publicProcedure
-        .input(
-            z.object({
-                id,
-                contentId: z.string().cuid(),
-            })
-        ).mutation(async ({ ctx, input }) => {
+        .input(z.object({ id, contentId}))
+      .mutation(async ({ ctx, input }) => {
+          // TODO not found
             return ctx.prisma.contentInSubject.delete({
                 where: {
                     contentId_subjectId: {
@@ -128,6 +121,7 @@ export const subjectRouter = router({
         .input(z.object({ id }))
         .mutation(async ({ ctx, input }) => {
             const where = { id: input.id };
+            // TODO not found
             return ctx.prisma.subject.delete({ where });
         }),
 });

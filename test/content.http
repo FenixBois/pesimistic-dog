@@ -1,0 +1,12 @@
+
+
+###
+POST {{trpc}}/content.create
+Content-Type: application/json
+
+{
+  "json": {
+    "title": "ABC",
+    "link": "def"
+  }
+}

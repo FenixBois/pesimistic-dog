@@ -31,7 +31,6 @@
     "**/*.mjs"
   ],
   "exclude": [
-    "node_modules",
-    "src/pages/api/examples.ts"
+    "node_modules"
   ]
 }
