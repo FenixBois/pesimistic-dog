@@ -7,6 +7,7 @@ import type { PrismaClient } from "@prisma/client";
 import { Prisma, Role } from "@prisma/client";
 import { id } from "../../../types/subject";
 import { description, orderNumber, subjectId, title } from "../../../types/topic";
+import {id as contentId} from "../../../types/content";
 
 async function getMaxOrderNumber(prisma: PrismaClient, subjectId: string): Promise<number> {
   return ((await prisma.topic.aggregate({
@@ -50,6 +51,7 @@ export const topicRouter = router({
     .mutation(async ({ ctx, input }) => {
       const where = {id: input.id};
       const data = {...input, id: undefined};
+      // TODO handle not found
       return ctx.prisma.topic.update({where, data})
     }),
   // TODO check rights
@@ -59,15 +61,11 @@ export const topicRouter = router({
     }))
     .mutation(async ({ ctx, input }) => {
       const where = { id: input.id };
+      // TODO handle not found
       return ctx.prisma.topic.delete({ where });
     }),
     addContent: publicProcedure
-        .input(
-            z.object({
-                id,
-                contentId: z.string().cuid(),
-            })
-        )
+        .input(z.object({ id, contentId, }))
         .mutation(async ({ ctx, input }) => {
             return ctx.prisma.topic.update({
                 where: { id: input.id },
@@ -86,10 +84,7 @@ export const topicRouter = router({
         }),
     removeContent: publicProcedure
         .input(
-            z.object({
-                id,
-                contentId: z.string().cuid(),
-            })
+            z.object({ id, contentId })
         ).mutation(async ({ ctx, input }) => {
                 return ctx.prisma.contentInTopic.delete({
                     where: {
