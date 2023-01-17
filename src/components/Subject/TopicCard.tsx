@@ -1,11 +1,11 @@
-import type { Content } from "@prisma/client";
-import { ContentCard } from "../Content";
-import { ActionIcon, Group, Paper, Stack, Text, Title } from "@mantine/core";
-import { AdjustmentsVerticalIcon, XMarkIcon } from "@heroicons/react/20/solid";
-import { EditTopicForm } from "components/Forms/EditTopicForm";
-import { useState } from "react";
-import { FormModal, DeleteConfirmationModal } from "components/utils";
-import { trpc } from "../../utils/trpc";
+import type { Content } from '@prisma/client';
+import { ContentCard } from '../Content';
+import { ActionIcon, Group, Paper, Stack, Text, Title } from '@mantine/core';
+import { AdjustmentsVerticalIcon, XMarkIcon } from '@heroicons/react/20/solid';
+import { EditTopicForm } from 'components/Forms/EditTopicForm';
+import { useState } from 'react';
+import { FormModal, DeleteConfirmationModal } from 'components/utils';
+import { trpc } from '../../utils/trpc';
 
 interface TopicCardProps {
     subjectId: string;
@@ -14,6 +14,7 @@ interface TopicCardProps {
     description: string;
     contents: Content[];
     editable?: boolean;
+    edit?: () => void;
     removable?: boolean;
     remove?: () => void;
 }
@@ -26,15 +27,19 @@ export function TopicCard({
     contents,
     removable,
     editable,
+    edit,
 }: TopicCardProps) {
     const utils = trpc.useContext();
     const [editTopicModalState, setEditTopicModalState] = useState(false);
     const [deleteTopicModalState, setDeleteTopicModalState] = useState(false);
 
     const removeTopicMutation = trpc.topic.delete.useMutation({
-        onError: (error) => {
-            console.log(error);
+        onSuccess: async () => {
+            await utils.subject.get.invalidate({ id: subjectId });
         },
+    });
+
+    const removeContentMutation = trpc.topic.removeContent.useMutation({
         onSuccess: async () => {
             await utils.subject.get.invalidate({ id: subjectId });
         },
@@ -42,6 +47,28 @@ export function TopicCard({
 
     function removeTopic() {
         removeTopicMutation.mutate({ id: topicId });
+    }
+
+    const addContentMutation = trpc.topic.addContent.useMutation({
+        onError: (error) => {
+            console.log(error);
+        },
+        onSuccess: async () => {
+            await utils.subject.get.invalidate({ id: subjectId });
+
+            console.log('Success');
+        },
+    });
+
+    function removeContent(contentId: string) {
+        removeContentMutation.mutate({ contentId, id: topicId });
+    }
+
+    function addContent(id: string) {
+        addContentMutation.mutate({
+            id: topicId,
+            contentId: id,
+        });
     }
 
     return (
@@ -98,7 +125,16 @@ export function TopicCard({
             </Group>
             <Stack mt={20}>
                 {contents?.map(({ id, title, link }) => (
-                    <ContentCard key={id} id={id} title={title} link={link} />
+                    <ContentCard
+                        key={id}
+                        id={id}
+                        title={title}
+                        link={link}
+                        editable={editable}
+                        edit={() => edit?.()}
+                        removable={editable}
+                        remove={() => removeContent(id)}
+                    />
                 ))}
             </Stack>
         </Paper>

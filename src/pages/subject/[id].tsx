@@ -1,14 +1,17 @@
-import { useRouter } from 'next/router';
 import { SubjectDetail } from '../../components/Subject';
 import { Layout } from '../../components/Layout';
+import type { GetServerSideProps } from 'next';
+import type { Subject } from '@prisma/client';
 
-export default function Subject() {
-    const router = useRouter();
-    const { id } = router.query;
-
+export default function Subject({ id }: { id: Subject['id'] }) {
     return (
         <Layout>
             <SubjectDetail id={String(id)} />
         </Layout>
     );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const { id } = context.query;
+    return { props: { id } };
+};
