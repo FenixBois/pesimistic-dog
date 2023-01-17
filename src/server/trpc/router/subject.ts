@@ -14,7 +14,7 @@ import {
     teacherId,
     title,
 } from '../../../types/subject';
-import {id as contentId} from "../../../types/content";
+import { id as contentId } from '../../../types/content';
 
 export const subjectRouter = router({
     create: protectedProcedure(
@@ -102,19 +102,18 @@ export const subjectRouter = router({
             });
         }),
     removeContent: publicProcedure
-        .input(z.object({ id, contentId}))
-      .mutation(async ({ ctx, input }) => {
-          // TODO not found
+        .input(z.object({ id, contentId }))
+        .mutation(async ({ ctx, input }) => {
+            // TODO not found
             return ctx.prisma.contentInSubject.delete({
                 where: {
                     contentId_subjectId: {
                         contentId: input.contentId,
                         subjectId: input.id,
-                    }
-                }
+                    },
+                },
             });
-        }
-    ),
+        }),
 
     // TODO check rights
     delete: protectedProcedure()
@@ -123,5 +122,12 @@ export const subjectRouter = router({
             const where = { id: input.id };
             // TODO not found
             return ctx.prisma.subject.delete({ where });
+        }),
+    getAllForStudyProgramme: publicProcedure
+        .input(z.object({ id }))
+        .query(async ({ ctx, input }) => {
+            return ctx.prisma.subject.findMany({
+                where: { studyProgrammeId: input.id },
+            });
         }),
 });
