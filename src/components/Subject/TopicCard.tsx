@@ -90,7 +90,7 @@ export function TopicCard({
                     <Title order={4}>{title}</Title>
                     <Text>{description}</Text>
                 </Stack>
-                <Flex>
+                <Flex gap={15}>
                     {editable && (
                         <div>
                             <ActionIcon

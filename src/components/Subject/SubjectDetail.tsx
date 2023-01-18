@@ -27,7 +27,6 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
         (
             [Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS, Role.TEACHER] as Role[]
         ).includes(role);
-    console.debug(role);
     const canRemoveSubject =
         !!role && role === Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS;
 

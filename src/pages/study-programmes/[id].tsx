@@ -22,8 +22,7 @@ export default function StudyProgrammeDetailPage({ id }: { id: string }) {
     return (
         <Layout>
             {data?.title ? <Title order={1}>{data.title}</Title> : null}
-            <Space />
-            <Stack>
+            <Stack pt={20}>
                 <LoadingOverlay visible={isSubjectsLoading} />
                 {subjects?.map((item) => (
                     <SubjectCard

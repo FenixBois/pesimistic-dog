@@ -4,12 +4,16 @@ import { trpc } from '../../utils/trpc';
 import { FormModal } from '../utils';
 import React, { useState } from 'react';
 import { CreateSubjectForm } from '../Forms/CreateSubjectForm';
+import { useSession } from 'next-auth/react';
+import { Role } from '@prisma/client';
 
 export function SubjectPage() {
     const utils = trpc.useContext();
     const subjects = trpc.subject.getAll.useQuery().data;
     const [createSubjectModalState, setCreateSubjectModalState] =
         useState(false);
+    const canCreateSubject =
+        useSession().data?.user?.role === Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS;
 
     const onSubmit = async () => {
         await utils.subject.getAll.invalidate();
@@ -21,16 +25,22 @@ export function SubjectPage() {
             <Group spacing='xl'>
                 <Flex w={'100%'} justify={'space-between'} align={'center'}>
                     <Title>Subjects</Title>
-                    <FormModal
-                        state={createSubjectModalState}
-                        setState={setCreateSubjectModalState}
-                        title={'Create subject'}
-                    >
-                        <CreateSubjectForm onSubmit={onSubmit} />
-                    </FormModal>
-                    <Button onClick={() => setCreateSubjectModalState(true)}>
-                        Add a new subject
-                    </Button>
+                    {canCreateSubject && (
+                        <>
+                            <FormModal
+                                state={createSubjectModalState}
+                                setState={setCreateSubjectModalState}
+                                title={'Create subject'}
+                            >
+                                <CreateSubjectForm onSubmit={onSubmit} />
+                            </FormModal>
+                            <Button
+                                onClick={() => setCreateSubjectModalState(true)}
+                            >
+                                Add a new subject
+                            </Button>
+                        </>
+                    )}
                 </Flex>
             </Group>
             <Stack pt={20}>
