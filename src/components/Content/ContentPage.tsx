@@ -1,4 +1,4 @@
-import { Button, Flex, Group, Title } from '@mantine/core';
+import { Button, Flex, Group, Title, Stack } from '@mantine/core';
 import { trpc } from '../../utils/trpc';
 import { ContentCard } from 'components/Content';
 import { FormModal } from '../utils';
@@ -39,17 +39,19 @@ export function ContentPage() {
                     />
                 </FormModal>
             </Group>
-            {contents?.map(({ id, title, link }) => (
-                <ContentCard
-                    key={id}
-                    id={id}
-                    title={title}
-                    link={link}
-                    editable
-                    removable
-                    remove={() => removeContent(id)}
-                />
-            ))}
+            <Stack pt={20}>
+                {contents?.map(({ id, title, link }) => (
+                    <ContentCard
+                        key={id}
+                        id={id}
+                        title={title}
+                        link={link}
+                        editable
+                        removable
+                        remove={() => removeContent(id)}
+                    />
+                ))}
+            </Stack>
         </>
     );
 }
