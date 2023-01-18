@@ -1,9 +1,11 @@
-import { Button, Flex, Group, Text } from '@mantine/core';
+import { Avatar, Button, Flex, Group, Text } from '@mantine/core';
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
 export function Navbar() {
     const { data: session } = useSession();
+
+    console.log(session);
     return (
         <Flex align={'center'} justify={'space-between'} py={50}>
             <Group align={'center'}>
@@ -23,9 +25,24 @@ export function Navbar() {
                     </Text>
                 </Link>
             </Group>
-
             {session?.user ? (
-                <Button onClick={() => signOut()}>Log out</Button>
+                <Flex gap={20} align={'center'}>
+                    <Avatar
+                        radius='xl'
+                        src={session.user.image}
+                        alt={`${session.user.name} profile image`}
+                    />
+                    <Flex direction={'column'}>
+                        <Text size={'md'} weight={'bold'}>
+                            {session.user.name}
+                        </Text>
+                        <Text size={'xs'} weight={'bold'} color={'violet'}>
+                            {session.user.role}
+                        </Text>
+                    </Flex>
+
+                    <Button onClick={() => signOut()}>Log out</Button>
+                </Flex>
             ) : (
                 <Button onClick={() => signIn('google')}>Log in</Button>
             )}

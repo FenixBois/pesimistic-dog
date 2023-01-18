@@ -12,7 +12,11 @@ export const authOptions: NextAuthOptions = {
         session({ session, user }) {
             if (session.user) {
                 session.user.id = user.id;
+
+                // @ts-expect-error - bug in next-auth types
+                session.user.role = user?.role;
             }
+
             return session;
         },
     },

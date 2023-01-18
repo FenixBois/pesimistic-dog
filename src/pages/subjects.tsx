@@ -5,7 +5,7 @@ export default function Subjects() {
     return (
         <>
             <Layout>
-                <SubjectPage></SubjectPage>
+                <SubjectPage />
             </Layout>
         </>
     );
