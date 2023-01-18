@@ -13,6 +13,8 @@ import { useState } from 'react';
 import { FormModal } from 'components/utils';
 import { EditContentForm } from '../Forms/EditContentForm';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { Role } from '@prisma/client';
 
 interface ContentCardProps {
     id: string;
@@ -34,7 +36,11 @@ export function ContentCard({
     edit,
 }: ContentCardProps) {
     const [editModalState, setEditModalState] = useState(false);
+    const { data: session } = useSession();
 
+    const canUserEdit =
+        session?.user?.role === Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS ||
+        session?.user?.role === Role.TEACHER;
     return (
         <Card withBorder px='lg' py='sm'>
             <Group position='apart'>
@@ -44,14 +50,14 @@ export function ContentCard({
                     </Link>
                 </Stack>
                 <Group>
-                    {editable && (
+                    {editable && canUserEdit ? (
                         <ActionIcon
                             variant='default'
                             onClick={() => setEditModalState(true)}
                         >
                             <AdjustmentsVerticalIcon width={18} />
                         </ActionIcon>
-                    )}
+                    ) : null}
                     <FormModal
                         title='Edit content'
                         state={editModalState}
@@ -67,7 +73,7 @@ export function ContentCard({
                             }}
                         />
                     </FormModal>
-                    {removable && (
+                    {removable && canUserEdit ? (
                         <ActionIcon
                             variant='subtle'
                             color='red'
@@ -75,7 +81,7 @@ export function ContentCard({
                         >
                             <XMarkIcon />
                         </ActionIcon>
-                    )}
+                    ) : null}
                 </Group>
             </Group>
         </Card>

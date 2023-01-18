@@ -5,7 +5,6 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 export function Navbar() {
     const { data: session } = useSession();
 
-    console.log(session);
     return (
         <Flex align={'center'} justify={'space-between'} py={50}>
             <Group align={'center'}>

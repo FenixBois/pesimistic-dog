@@ -1,4 +1,4 @@
-import { Button, Flex, Group, Title } from '@mantine/core';
+import { Button, Flex, Group, Stack, Title } from '@mantine/core';
 import { SubjectCard } from './SubjectCard';
 import { trpc } from '../../utils/trpc';
 import { FormModal } from '../utils';
@@ -33,18 +33,26 @@ export function SubjectPage() {
                     </Button>
                 </Flex>
             </Group>
-            {subjects?.map(
-                ({ id, title, degreeOfStudy, numberOfCredits, language }) => (
-                    <SubjectCard
-                        key={id}
-                        id={id}
-                        title={title}
-                        degree={degreeOfStudy}
-                        numberOfCredits={numberOfCredits}
-                        language={language}
-                    />
-                )
-            )}
+            <Stack pt={20}>
+                {subjects?.map(
+                    ({
+                        id,
+                        title,
+                        degreeOfStudy,
+                        numberOfCredits,
+                        language,
+                    }) => (
+                        <SubjectCard
+                            key={id}
+                            id={id}
+                            title={title}
+                            degree={degreeOfStudy}
+                            numberOfCredits={numberOfCredits}
+                            language={language}
+                        />
+                    )
+                )}
+            </Stack>
         </>
     );
 }

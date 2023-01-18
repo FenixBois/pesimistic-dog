@@ -18,7 +18,7 @@ export function SubjectCard({
 }: SubjectCardProps) {
     return (
         <Link href={'/subject/' + id} passHref>
-            <Paper shadow='sm' radius='md' p='lg'>
+            <Paper withBorder shadow='sm' radius='md' p='lg'>
                 <Title order={4}>{title}</Title>
                 <Text>
                     Credits: {numberOfCredits}, Degree: {degree}, Language:{' '}
