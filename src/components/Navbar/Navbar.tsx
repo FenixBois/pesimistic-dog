@@ -1,9 +1,21 @@
-import { Avatar, Button, Flex, Group, Text } from '@mantine/core';
+import {
+    ActionIcon,
+    Affix,
+    Avatar,
+    Button,
+    Flex,
+    Group,
+    Text,
+    useMantineColorScheme,
+} from '@mantine/core';
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
+import { IconSun, IconMoonStars } from '@tabler/icons';
 
 export function Navbar() {
     const { data: session } = useSession();
+    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+    const dark = colorScheme === 'dark';
 
     return (
         <Flex align={'center'} justify={'space-between'} py={50}>
@@ -46,6 +58,17 @@ export function Navbar() {
             ) : (
                 <Button onClick={() => signIn('google')}>Log in</Button>
             )}
+            <Affix position={{ bottom: 20, right: 20 }}>
+                <ActionIcon
+                    variant='outline'
+                    color={'violet'}
+                    onClick={() => toggleColorScheme()}
+                    title='Toggle color scheme'
+                    size={40}
+                >
+                    {dark ? <IconSun size={20} /> : <IconMoonStars size={20} />}
+                </ActionIcon>
+            </Affix>
         </Flex>
     );
 }
