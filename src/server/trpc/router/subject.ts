@@ -12,10 +12,7 @@ import {
 import { id as contentId } from '../../../types/content';
 
 export const subjectRouter = router({
-    create: protectedProcedure(
-        Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS,
-        Role.TEACHER
-    )
+    create: protectedProcedure(Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS)
         .input(createSubjectInput)
         .mutation(async ({ ctx, input }) => {
             try {
