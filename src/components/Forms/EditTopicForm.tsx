@@ -1,8 +1,9 @@
 import { Button, Stack, TextInput, Title } from '@mantine/core';
 import type { Content } from '@prisma/client';
 import { trpc } from '../../utils/trpc';
-import { useForm } from '@mantine/form';
+import { useForm, zodResolver } from '@mantine/form';
 import { EditContentsForm } from './EditContentsForm';
+import { editTopicInput } from '../../types/topic';
 
 interface EditTopicFormProps {
     subjectId: string;
@@ -24,6 +25,8 @@ export function EditTopicForm({
             title: title,
             description: description,
         },
+        validate: zodResolver(editTopicInput),
+        validateInputOnBlur: true,
     });
 
     const removeContentMutation = trpc.topic.removeContent.useMutation({

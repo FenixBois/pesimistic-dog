@@ -6,8 +6,8 @@ import { convertKnownPrismaError } from "../../common/utils";
 import type { PrismaClient } from "@prisma/client";
 import { Prisma, Role } from "@prisma/client";
 import { id } from "../../../types/subject";
-import { description, orderNumber, subjectId, title } from "../../../types/topic";
-import {id as contentId} from "../../../types/content";
+import { createTopicInput, editTopicInput } from "../../../types/topic";
+import { id as contentId } from "../../../types/content";
 
 async function getMaxOrderNumber(prisma: PrismaClient, subjectId: string): Promise<number> {
   return ((await prisma.topic.aggregate({
@@ -18,7 +18,7 @@ async function getMaxOrderNumber(prisma: PrismaClient, subjectId: string): Promi
 
 export const topicRouter = router({
   create: protectedProcedure(Role.TEACHER, Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS)
-    .input(z.object({ title, description, orderNumber, subjectId }))
+    .input(createTopicInput)
     .mutation(async ({ ctx, input }) => {
       const orderNumber = input.orderNumber ?? (await getMaxOrderNumber(ctx.prisma, input.subjectId) + 1);
       const data = {
@@ -41,18 +41,12 @@ export const topicRouter = router({
     }),
   // TODO check rights
   edit: protectedProcedure(Role.TEACHER, Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS)
-    .input(z.object({
-      id,
-      title: title.optional(),
-      description: description.optional(),
-      orderNumber: orderNumber.optional(),
-      subjectId: subjectId.optional()
-    }))
+    .input(editTopicInput)
     .mutation(async ({ ctx, input }) => {
-      const where = {id: input.id};
-      const data = {...input, id: undefined};
+      const where = { id: input.id };
+      const data = { ...input, id: undefined };
       // TODO handle not found
-      return ctx.prisma.topic.update({where, data})
+      return ctx.prisma.topic.update({ where, data });
     }),
   // TODO check rights
   delete: protectedProcedure(Role.TEACHER, Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS)
@@ -64,36 +58,36 @@ export const topicRouter = router({
       // TODO handle not found
       return ctx.prisma.topic.delete({ where });
     }),
-    addContent: publicProcedure
-        .input(z.object({ id, contentId, }))
-        .mutation(async ({ ctx, input }) => {
-            return ctx.prisma.topic.update({
-                where: { id: input.id },
-                data: {
-                    contents: {
-                        create: [
-                            {
-                                content: {
-                                    connect: { id: input.contentId },
-                                },
-                            },
-                        ],
-                    },
-                },
-            });
-        }),
-    removeContent: publicProcedure
-        .input(
-            z.object({ id, contentId })
-        ).mutation(async ({ ctx, input }) => {
-                return ctx.prisma.contentInTopic.delete({
-                    where: {
-                        contentId_topicId: {
-                            contentId: input.contentId,
-                            topicId: input.id,
-                        }
-                    }
-                });
+  addContent: publicProcedure
+    .input(z.object({ id, contentId }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.topic.update({
+        where: { id: input.id },
+        data: {
+          contents: {
+            create: [
+              {
+                content: {
+                  connect: { id: input.contentId }
+                }
+              }
+            ]
+          }
+        }
+      });
+    }),
+  removeContent: publicProcedure
+    .input(
+      z.object({ id, contentId })
+    ).mutation(async ({ ctx, input }) => {
+        return ctx.prisma.contentInTopic.delete({
+          where: {
+            contentId_topicId: {
+              contentId: input.contentId,
+              topicId: input.id
             }
-        ),
+          }
+        });
+      }
+    )
 });

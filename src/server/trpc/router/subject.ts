@@ -5,14 +5,9 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { convertKnownPrismaError } from '../../common/utils';
 import { Role } from '@prisma/client';
 import {
-    DegreeOfStudySchema,
-    description,
+    createSubjectInput,
+    editSubjectInput,
     id,
-    LanguageOfStudySchema,
-    numberOfCredits,
-    studyProgrammeId,
-    teacherId,
-    title,
 } from '../../../types/subject';
 import { id as contentId } from '../../../types/content';
 
@@ -21,17 +16,7 @@ export const subjectRouter = router({
         Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS,
         Role.TEACHER
     )
-        .input(
-            z.object({
-                title,
-                teacherId,
-                description,
-                studyProgrammeId,
-                numberOfCredits,
-                degreeOfStudy: DegreeOfStudySchema,
-                language: LanguageOfStudySchema,
-            })
-        )
+        .input(createSubjectInput)
         .mutation(async ({ ctx, input }) => {
             try {
                 return await ctx.prisma.subject.create({ data: input });
@@ -66,18 +51,7 @@ export const subjectRouter = router({
         return ctx.prisma.subject.findMany();
     }),
     edit: publicProcedure
-        .input(
-            z.object({
-                id,
-                title: title.optional(),
-                description: description.optional(),
-                teacherId: teacherId.optional(),
-                studyProgrammeId: studyProgrammeId.optional(),
-                numberOfCredits: numberOfCredits.optional(),
-                degreeOfStudy: DegreeOfStudySchema.optional(),
-                language: LanguageOfStudySchema.optional(),
-            })
-        )
+        .input(editSubjectInput)
         .mutation(async ({ ctx, input }) => {
             const where = { id: input.id };
             const data = { ...input, id: undefined };
