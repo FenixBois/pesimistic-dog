@@ -10,6 +10,7 @@ export const mantineTheme: MantineThemeOverride = {
 
         a: {
             textDecoration: 'none',
+            color: 'inherit',
         },
     }),
 };
