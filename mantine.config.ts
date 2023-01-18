@@ -1,6 +1,15 @@
-import type { MantineThemeOverride } from "@mantine/core";
+import type { MantineThemeOverride } from '@mantine/core';
 
 export const mantineTheme: MantineThemeOverride = {
-    colorScheme: "light",
-    primaryColor: "violet"
+    colorScheme: 'light',
+    primaryColor: 'violet',
+    globalStyles: (theme) => ({
+        '*, *::before, *::after': {
+            boxSizing: 'border-box',
+        },
+
+        a: {
+            textDecoration: 'none',
+        },
+    }),
 };

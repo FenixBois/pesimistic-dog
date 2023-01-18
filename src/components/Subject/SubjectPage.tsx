@@ -38,7 +38,7 @@ export function SubjectPage() {
                         id={id}
                         title={title}
                         degree={degreeOfStudy}
-                        credits={numberOfCredits}
+                        numberOfCredits={numberOfCredits}
                         language={language}
                     />
                 )
