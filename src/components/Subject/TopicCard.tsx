@@ -86,7 +86,7 @@ export function TopicCard({
     return (
         <Card withBorder radius='md' p='lg'>
             <Group position='apart'>
-                <Stack w={400} spacing='xs'>
+                <Stack spacing='xs'>
                     <Title order={4}>{title}</Title>
                     <Text>{description}</Text>
                 </Stack>
@@ -110,6 +110,10 @@ export function TopicCard({
                                     contents={contents}
                                     title={title}
                                     description={description}
+                                    edit={() => {
+                                        setEditTopicModalState(false);
+                                        edit?.();
+                                    }}
                                 />
                             </FormModal>
                         </div>
@@ -154,7 +158,7 @@ export function TopicCard({
                                 setAddExistingContentModalState(true)
                             }
                         >
-                            Add existing
+                            Add existing content
                         </Button>
                         <FormModal
                             state={addExistingContentModalState}
@@ -170,7 +174,7 @@ export function TopicCard({
                             variant={'outline'}
                             onClick={() => setCreateContentModalState(true)}
                         >
-                            Create new
+                            Create new content
                         </Button>
                         <FormModal
                             state={createContentModalState}

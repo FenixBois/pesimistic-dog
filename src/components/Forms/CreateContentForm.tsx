@@ -20,12 +20,13 @@ export function CreateContentForm({ submit }: CreateContentFormProps) {
     const form = useForm<CreateContentFormValues>({
         validate: zodResolver(createContentInput),
         validateInputOnBlur: true,
+        initialValues: {
+            title: '',
+            link: '',
+        },
     });
 
     const createContentMutation = trpc.content.create.useMutation({
-        onError: (error) => {
-            console.log(error);
-        },
         onSuccess: async (content) => {
             submit(content);
             await utils.content.invalidate();
