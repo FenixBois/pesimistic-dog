@@ -22,7 +22,6 @@ export const CreateSubjectForm: React.FC<CreateSubjectFormProps> = ({
 }: CreateSubjectFormProps) => {
     const teachers = trpc.user.getAllTeachers.useQuery().data;
     const studyProgrammes = trpc.studyProgramme.getAll.useQuery().data;
-    console.debug(studyProgrammes);
     const createSubjectMutation = trpc.subject.create.useMutation({
         onSuccess: async () => {
             onSubmit?.();
@@ -32,9 +31,12 @@ export const CreateSubjectForm: React.FC<CreateSubjectFormProps> = ({
     const form = useForm<CreateSubjectInputType>({
         validateInputOnBlur: true,
         validate: zodResolver(createSubjectInput),
+        // @ts-expect-error needed a default value for title, as i received warnings
+        //  but no need to pass all the values
+        initialValues: {
+            title: '',
+        },
     });
-
-    console.debug(form.errors);
 
     if (createSubjectMutation.isLoading) return <p>Creating subject...</p>;
     if (createSubjectMutation.isError)
@@ -46,6 +48,7 @@ export const CreateSubjectForm: React.FC<CreateSubjectFormProps> = ({
                 <TextInput
                     label='Title'
                     placeholder='Title'
+                    withAsterisk
                     {...form.getInputProps('title')}
                 />
                 <Textarea
