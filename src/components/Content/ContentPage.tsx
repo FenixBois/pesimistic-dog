@@ -17,6 +17,14 @@ export function ContentPage() {
     });
 
     const { data: session } = useSession();
+    const role = session?.user?.role;
+    const canCreateContent = role === Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS;
+    const canEditContent =
+        !!role &&
+        (
+            [Role.TEACHER, Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS] as Role[]
+        ).includes(role);
+    const canRemoveContent = canCreateContent;
 
     const [contentModalState, setContentModalState] = useState(false);
 
@@ -29,9 +37,7 @@ export function ContentPage() {
             <Group spacing='xl'>
                 <Flex w={'100%'} justify={'space-between'} align={'center'}>
                     <Title>Contents</Title>
-                    {session?.user?.role ===
-                        Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS ||
-                    session?.user?.role === Role.TEACHER ? (
+                    {canCreateContent ? (
                         <Button onClick={() => setContentModalState(true)}>
                             Add a content
                         </Button>
@@ -54,8 +60,9 @@ export function ContentPage() {
                         id={id}
                         title={title}
                         link={link}
-                        editable
-                        removable
+                        edit={() => utils.content.invalidate()}
+                        editable={canEditContent}
+                        removable={canRemoveContent}
                         remove={() => removeContent(id)}
                     />
                 ))}
