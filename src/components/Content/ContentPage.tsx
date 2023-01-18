@@ -18,13 +18,13 @@ export function ContentPage() {
 
     const { data: session } = useSession();
     const role = session?.user?.role;
-    const canCreateContent = role === Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS;
-    const canEditContent =
+    const canCreateContent =
         !!role &&
         (
             [Role.TEACHER, Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS] as Role[]
         ).includes(role);
-    const canRemoveContent = canCreateContent;
+    const canEditContent = canCreateContent;
+    const canRemoveContent = Role.DEPARTMENT_OF_ACADEMIC_AFFAIRS === role;
 
     const [contentModalState, setContentModalState] = useState(false);
 
