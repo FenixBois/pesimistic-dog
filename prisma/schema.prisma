@@ -49,7 +49,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  role          Role
+  role          Role      @default(STUDENT)
 
   teachingSubjects Subject[]
 }
