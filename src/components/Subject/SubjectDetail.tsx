@@ -177,7 +177,13 @@ export function SubjectDetail({ id }: SubjectDetailProps) {
                     setState={setCreateTopicModalState}
                     title='Create topic'
                 >
-                    <CreateTopicForm subjectId={subject.id} />
+                    <CreateTopicForm
+                        subjectId={subject.id}
+                        onSubmit={() => {
+                            utils.subject.get.invalidate({ id: subject.id });
+                            setCreateTopicModalState(false);
+                        }}
+                    />
                 </FormModal>
                 {subject.topics.map(({ id, title, description, contents }) => (
                     <TopicCard

@@ -5,6 +5,7 @@ import { createTopicInput } from '../../types/topic';
 
 interface CreateTopicFormProps {
     subjectId: string;
+    onSubmit?: () => void;
 }
 
 interface CreateTopicFormValues {
@@ -13,8 +14,7 @@ interface CreateTopicFormValues {
     contentIds: string[];
 }
 
-export function CreateTopicForm({ subjectId }: CreateTopicFormProps) {
-    const utils = trpc.useContext();
+export function CreateTopicForm({ subjectId, onSubmit }: CreateTopicFormProps) {
     const form = useForm<CreateTopicFormValues>({
         initialValues: {
             title: '',
@@ -26,11 +26,8 @@ export function CreateTopicForm({ subjectId }: CreateTopicFormProps) {
     });
 
     const createTopicMutation = trpc.topic.create.useMutation({
-        onError: (error) => {
-            console.log(error);
-        },
         onSuccess: async () => {
-            await utils.subject.get.invalidate({ id: subjectId });
+            onSubmit?.();
         },
     });
 
