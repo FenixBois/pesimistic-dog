@@ -30,6 +30,7 @@ export function Navbar() {
                         radius='xl'
                         src={session.user.image}
                         alt={`${session.user.name} profile image`}
+                        color={'violet'}
                     />
                     <Flex direction={'column'}>
                         <Text size={'md'} weight={'bold'}>
