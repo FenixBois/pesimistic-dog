@@ -1,4 +1,4 @@
-import { Button, Group, Title } from '@mantine/core';
+import { Button, Flex, Group, Title } from '@mantine/core';
 import { SubjectCard } from './SubjectCard';
 import { trpc } from '../../utils/trpc';
 import { FormModal } from '../utils';
@@ -19,17 +19,19 @@ export function SubjectPage() {
     return (
         <>
             <Group spacing='xl'>
-                <Title>Subjects</Title>
-                <FormModal
-                    state={createSubjectModalState}
-                    setState={setCreateSubjectModalState}
-                    title={'Create subject'}
-                >
-                    <CreateSubjectForm onSubmit={onSubmit} />
-                </FormModal>
-                <Button onClick={() => setCreateSubjectModalState(true)}>
-                    Add a new subject
-                </Button>
+                <Flex w={'100%'} justify={'space-between'} align={'center'}>
+                    <Title>Subjects</Title>
+                    <FormModal
+                        state={createSubjectModalState}
+                        setState={setCreateSubjectModalState}
+                        title={'Create subject'}
+                    >
+                        <CreateSubjectForm onSubmit={onSubmit} />
+                    </FormModal>
+                    <Button onClick={() => setCreateSubjectModalState(true)}>
+                        Add a new subject
+                    </Button>
+                </Flex>
             </Group>
             {subjects?.map(
                 ({ id, title, degreeOfStudy, numberOfCredits, language }) => (

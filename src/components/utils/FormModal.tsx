@@ -1,4 +1,4 @@
-import { Modal } from '@mantine/core';
+import { Modal, Title } from '@mantine/core';
 import type { ReactNode } from 'react';
 
 interface SearchFormProps {
@@ -16,11 +16,11 @@ export function FormModal({
 }: SearchFormProps) {
     return (
         <Modal
-            title={<h2>{title}</h2>}
+            title={<Title order={2}>{title}</Title>}
             opened={state}
             onClose={() => setState(false)}
             size='lg'
-            padding={50}
+            padding={30}
         >
             {children}
         </Modal>

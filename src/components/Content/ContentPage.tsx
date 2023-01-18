@@ -1,4 +1,4 @@
-import { Button, Group, Title } from '@mantine/core';
+import { Button, Flex, Group, Title } from '@mantine/core';
 import { trpc } from '../../utils/trpc';
 import { ContentCard } from 'components/Content';
 import { FormModal } from '../utils';
@@ -23,10 +23,12 @@ export function ContentPage() {
     return (
         <>
             <Group spacing='xl'>
-                <Title>Contents</Title>
-                <Button onClick={() => setContentModalState(true)}>
-                    Add a content
-                </Button>
+                <Flex w={'100%'} justify={'space-between'} align={'center'}>
+                    <Title>Contents</Title>
+                    <Button onClick={() => setContentModalState(true)}>
+                        Add a content
+                    </Button>
+                </Flex>
                 <FormModal
                     title='Create new content'
                     state={contentModalState}
